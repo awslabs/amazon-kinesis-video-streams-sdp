@@ -66,7 +66,6 @@ popd
 make -C ${BUILD_DIR}/ coverage
 lcov --rc lcov_branch_coverage=1 -r ${BUILD_DIR}/coverage.info -o ${BUILD_DIR}/coverage.info '*test*' '*CMakeCCompilerId*' '*mocks*'
 lcov --rc lcov_branch_coverage=1 --list ${BUILD_DIR}/coverage.info
-```
 
 # Generate HTML coverage report
 genhtml ${BUILD_DIR}/coverage.info -o ${BUILD_DIR}/htmlout
