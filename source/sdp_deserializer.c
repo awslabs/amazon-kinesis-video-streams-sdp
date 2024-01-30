@@ -1,6 +1,8 @@
+/* Standard includes. */
 #include <stdio.h>
 #include <string.h>
 
+/* Interface includes. */
 #include "sdp_deserializer.h"
 
 SdpResult_t SdpDeserializer_Init( SdpDeserializerContext_t * pCtx,
@@ -57,7 +59,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
 
         if( remainingLength < 3 )
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -85,7 +87,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
             result = SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND;
         }
 
-        if ( result == SDP_RESULT_OK )
+        if( result == SDP_RESULT_OK )
         {
             if( pCtx->pStart[ i - 1 ] == '\r' )
             {
@@ -135,7 +137,9 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
             }
             else if( numSpaces == 2 )
             {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT64, &( pOriginator->sessionId ) );
+                sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pOriginator->sessionId ) );
 
                 if( sscanfRetVal != 1 )
                 {
@@ -145,7 +149,9 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
             }
             else /* numSpaces == 3 */
             {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT64, &( pOriginator->sessionVersion ) );
+                sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pOriginator->sessionVersion ) );
 
                 if( sscanfRetVal != 1 )
                 {
@@ -154,6 +160,9 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
                 }
                 else
                 {
+                    /* Skip over space. */
+                    start = i + 1;
+
                     /* break to parse connection info inside of originator. */
                     break;
                 }
@@ -168,11 +177,13 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
         if( i < valueLength )
         {
             /* Originator part is parsed, continue to parse connection info. */
-            result = SdpDeserializer_ParseConnectionInfo( &( pValue[ i + 1 ] ), valueLength - ( i + 1 ), &pOriginator->connectionInfo );
+            result = SdpDeserializer_ParseConnectionInfo( &( pValue[ start ] ),
+                                                          valueLength - start,
+                                                          &( pOriginator->connectionInfo ) );
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -255,7 +266,7 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -279,18 +290,21 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
             pBandwidthInfo->pBwType = &( pValue[ 0 ] );
             pBandwidthInfo->bwTypeLength = i;
 
-            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ), "%" SDP_PRINT_FMT_UINT64, &( pBandwidthInfo->sdpBandwidthValue ) );
-
+            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
+                                   "%" SDP_PRINT_FMT_UINT64,
+                                   &( pBandwidthInfo->sdpBandwidthValue ) );
             if( sscanfRetVal != 1 )
             {
                 result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
             }
+
             break;
         }
     }
-    if ( numColon == 0 )
+
+    if( numColon == 0 )
     {
-        result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+        result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
     }
 
     return result;
@@ -310,8 +324,11 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
         if( pValue[ i ] == ' ' )
         {
             numSpaces += 1;
+
             /* Parse start-time. */
-            sscanfRetVal = sscanf( &( pValue[ 0 ] ), "%" SDP_PRINT_FMT_UINT64, &( pTimeDescription->startTime ) );
+            sscanfRetVal = sscanf( &( pValue[ 0 ] ),
+                                   "%" SDP_PRINT_FMT_UINT64,
+                                   &( pTimeDescription->startTime ) );
 
             if( sscanfRetVal != 1 )
             {
@@ -320,20 +337,24 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
             }
 
             /* Parse stop-time. */
-            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ), "%" SDP_PRINT_FMT_UINT64, &( pTimeDescription->stopTime ) );
+            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
+                                   "%" SDP_PRINT_FMT_UINT64,
+                                   &( pTimeDescription->stopTime ) );
 
             if( sscanfRetVal != 1 )
             {
                 result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME;
             }
+
             break;
         }
     }
 
-    if ( numSpaces == 0 )
+    if( numSpaces == 0 )
     {
-        result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+        result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
     }
+
     return result;
 }
 /*-----------------------------------------------------------*/
@@ -393,7 +414,9 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
             }
             else if( numSpaces == 2 )
             {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT16, &( pMedia->port ) );
+                sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                       "%" SDP_PRINT_FMT_UINT16,
+                                       &( pMedia->port ) );
 
                 if( sscanfRetVal != 1 )
                 {
@@ -402,16 +425,20 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
                 }
 
                 pMedia->portNum = 0;
-                for( j=start ; j<i ; j++ )
+
+                for( j = start ; j < i ; j++ )
                 {
                     if( pValue[ j ] == '/' )
                     {
-                        sscanfRetVal = sscanf( &( pValue[ j+1 ] ), "%" SDP_PRINT_FMT_UINT16, &( pMedia->portNum ) );
+                        sscanfRetVal = sscanf( &( pValue[ j + 1 ] ),
+                                               "%" SDP_PRINT_FMT_UINT16,
+                                               &( pMedia->portNum ) );
 
                         if( sscanfRetVal != 1 )
                         {
                             result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM;
                         }
+
                         break;
                     }
                 }
@@ -439,7 +466,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 

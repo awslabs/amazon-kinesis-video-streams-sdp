@@ -32,7 +32,7 @@ typedef enum SdpResult
     SDP_RESULT_BAD_PARAM,
     SDP_RESULT_MESSAGE_END,
     SDP_RESULT_MESSAGE_MALFORMED,
-    SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO,
+    SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO,
     SDP_RESULT_MESSAGE_MALFORMED_EQUAL_NOT_FOUND,
     SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND,
     SDP_RESULT_MESSAGE_MALFORMED_NO_VALUE,
@@ -86,7 +86,7 @@ typedef struct SdpBandwidthInfo
 {
     const char * pBwType;
     size_t bwTypeLength;
-    uint64_t sdpBandwidthValue; // kbps
+    uint64_t sdpBandwidthValue; /* kbps. */
 } SdpBandwidthInfo_t;
 
 typedef struct SdpTimeDuration

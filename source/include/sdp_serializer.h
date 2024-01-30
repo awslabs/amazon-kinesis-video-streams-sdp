@@ -57,7 +57,9 @@ SdpResult_t SdpSerializer_Finalize( SdpSerializerContext_t * pCtx,
                                     const char ** pSdpMessage,
                                     size_t * pSdpMessageLength );
 
-/* Currently repeat times ("r="), time zone adjustment ("z="), encryption keys ("k=") are not supported. */
+/* Currently repeat times ("r="), time zone adjustment ("z=") and, encryption
+ * keys ("k=") are not supported. */
+
 /*-----------------------------------------------------------*/
 
 #endif /* SDP_SERIALIZER_H */
