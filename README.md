@@ -49,7 +49,7 @@ To build unit tests, the submodule dependency of CMock is required. Use the
 following command to clone the submodule:
 
 ```
-git submodule update --checkout --init --recursive test/unit-test/CMock
+git submodule update --checkout --init --recursive test/CMock
 ```
 
 ### Steps to build Unit Tests
@@ -58,7 +58,10 @@ git submodule update --checkout --init --recursive test/unit-test/CMock
 1. Run the following command to generate Makefiles:
 
     ```
-    cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG
+    cmake -S test/unit-test -B build/ -G "Unix Makefiles" \
+     -DCMAKE_BUILD_TYPE=Debug \
+     -DBUILD_CLONE_SUBMODULES=ON \
+     -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG'
     ```
 1. Run the following command to build the library and unit tests:
 
