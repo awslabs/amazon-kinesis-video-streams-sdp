@@ -42,15 +42,18 @@ SdpResult_t SdpSerializer_AddBuffer( SdpSerializerContext_t * pCtx,
     if( ( pCtx == NULL ) ||
         ( pValue == NULL ) ||
         ( valueLength == 0 ) ||
-        ( pCtx->pStart == NULL ) )
+        ( pCtx->currentIndex > pCtx->totalLength ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -62,7 +65,7 @@ SdpResult_t SdpSerializer_AddBuffer( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -86,15 +89,18 @@ SdpResult_t SdpSerializer_AddU32( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) )
+        ( pCtx->currentIndex > pCtx->totalLength ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -107,7 +113,7 @@ SdpResult_t SdpSerializer_AddU32( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -131,15 +137,18 @@ SdpResult_t SdpSerializer_AddU64( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) )
+        ( pCtx->currentIndex > pCtx->totalLength ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -152,7 +161,7 @@ SdpResult_t SdpSerializer_AddU64( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -176,7 +185,7 @@ SdpResult_t SdpSerializer_AddOriginator( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pOriginator == NULL ) ||
         ( pOriginator->connectionInfo.pAddress == NULL ) ||
         ( pOriginator->connectionInfo.networkType != SDP_NETWORK_IN ) ||
@@ -188,8 +197,11 @@ SdpResult_t SdpSerializer_AddOriginator( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -212,7 +224,7 @@ SdpResult_t SdpSerializer_AddOriginator( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -236,7 +248,7 @@ SdpResult_t SdpSerializer_AddConnectionInfo( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pConnInfo == NULL ) ||
         ( pConnInfo->networkType != SDP_NETWORK_IN ) ||
         ( pConnInfo->pAddress == NULL ) ||
@@ -248,8 +260,11 @@ SdpResult_t SdpSerializer_AddConnectionInfo( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -263,7 +278,7 @@ SdpResult_t SdpSerializer_AddConnectionInfo( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -287,7 +302,7 @@ SdpResult_t SdpSerializer_AddBandwidthInfo( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pBandwidthInfo == NULL ) ||
         ( pBandwidthInfo->pBwType == NULL ) )
     {
@@ -296,8 +311,11 @@ SdpResult_t SdpSerializer_AddBandwidthInfo( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -311,7 +329,7 @@ SdpResult_t SdpSerializer_AddBandwidthInfo( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -335,7 +353,7 @@ SdpResult_t SdpSerializer_AddTimeActive( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pTimeDescription == NULL ) )
     {
         result = SDP_RESULT_BAD_PARAM;
@@ -343,8 +361,11 @@ SdpResult_t SdpSerializer_AddTimeActive( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         snprintfRetVal = snprintf( pWriteBuffer,
                                    remainingLength,
@@ -359,7 +380,7 @@ SdpResult_t SdpSerializer_AddTimeActive( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -383,7 +404,7 @@ SdpResult_t SdpSerializer_AddAttribute( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pAttribute == NULL ) ||
         ( pAttribute->pAttributeName == NULL ) )
     {
@@ -392,8 +413,11 @@ SdpResult_t SdpSerializer_AddAttribute( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         if( pAttribute->pAttributeValue != NULL )
         {
@@ -417,7 +441,7 @@ SdpResult_t SdpSerializer_AddAttribute( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -441,7 +465,7 @@ SdpResult_t SdpSerializer_AddMedia( SdpSerializerContext_t * pCtx,
     char * pWriteBuffer = NULL;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pMedia == NULL ) ||
         ( pMedia->pProtocol == NULL ) ||
         ( pMedia->pFmt == NULL ) )
@@ -451,8 +475,11 @@ SdpResult_t SdpSerializer_AddMedia( SdpSerializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
-        remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        if( pCtx->pStart != NULL )
+        {
+            pWriteBuffer = &( pCtx->pStart[ pCtx->currentIndex ] );
+            remainingLength = pCtx->totalLength - pCtx->currentIndex;
+        }
 
         if( pMedia->portNum != 0 )
         {
@@ -491,7 +518,7 @@ SdpResult_t SdpSerializer_AddMedia( SdpSerializerContext_t * pCtx,
         {
             result = SDP_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
-        else if( ( size_t ) snprintfRetVal >= remainingLength )
+        else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
         }
@@ -512,7 +539,7 @@ SdpResult_t SdpSerializer_Finalize( SdpSerializerContext_t * pCtx,
     SdpResult_t result = SDP_RESULT_OK;
 
     if( ( pCtx == NULL ) ||
-        ( pCtx->pStart == NULL ) ||
+        ( pCtx->currentIndex > pCtx->totalLength ) ||
         ( pSdpMessage == NULL ) ||
         ( pSdpMessageLength == NULL ) )
     {

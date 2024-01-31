@@ -131,6 +131,33 @@ void test_SdpSerializer_AddBuffer_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddBuffer_InvalidContext( void )
+{
+    SdpResult_t result;
+    char inputString[] = "-";
+    size_t inputLength = 1;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    result = SdpSerializer_AddBuffer( &( serializerContext ),
+                                      's',
+                                      &( inputString[ 0 ] ),
+                                      inputLength );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Input buffer is NULL.
  */
 void test_SdpSerializer_AddBuffer_NullBuffer( void )
@@ -194,7 +221,7 @@ void test_SdpSerializer_AddBuffer_NullOutputBuffer( void )
                                       &( inputString[ 0 ] ),
                                       inputLength );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 /*-----------------------------------------------------------*/
 
@@ -261,6 +288,31 @@ void test_SdpSerializer_AddU32_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddU32_InvalidContext( void )
+{
+    SdpResult_t result;
+    uint32_t version = 123;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    result = SdpSerializer_AddU32( &( serializerContext ),
+                                   'v',
+                                   version );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Output buffer is NULL.
  */
 void test_SdpSerializer_AddU32_NullOutputBuffer( void )
@@ -277,7 +329,7 @@ void test_SdpSerializer_AddU32_NullOutputBuffer( void )
                                    'v',
                                    version );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 /*-----------------------------------------------------------*/
 
@@ -343,6 +395,31 @@ void test_SdpSerializer_AddU64_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddU64_InvalidContext( void )
+{
+    SdpResult_t result;
+    uint64_t version = 123;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    result = SdpSerializer_AddU64( &( serializerContext ),
+                                   'v',
+                                   version );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Output buffer is NULL.
  */
 void test_SdpSerializer_AddU64_NullOutputBuffer( void )
@@ -359,7 +436,7 @@ void test_SdpSerializer_AddU64_NullOutputBuffer( void )
                                    'v',
                                    version );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 /*-----------------------------------------------------------*/
 
@@ -494,6 +571,45 @@ void test_SdpSerializer_AddOriginator_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddOriginator_InvalidContext( void )
+{
+    SdpResult_t result;
+    char expectName[] = "Jode";
+    char expectAddr[] = "192.168.123.456";
+    uint64_t expectSessionID = 4294967296;
+    uint64_t expectSessionVersion = 4294967297;
+    SdpOriginator_t originator;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize originator. */
+    originator.pUserName = expectName;
+    originator.userNameLength = strlen( expectName );
+    originator.sessionId = expectSessionID;
+    originator.sessionVersion = expectSessionVersion;
+    originator.connectionInfo.networkType = SDP_NETWORK_IN;
+    originator.connectionInfo.addressType = SDP_ADDRESS_IPV4;
+    originator.connectionInfo.pAddress = expectAddr;
+    originator.connectionInfo.addressLength = strlen( expectAddr );
+
+    result = SdpSerializer_AddOriginator( &( serializerContext ),
+                                          'o',
+                                          &( originator ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Input originator is NULL.
  */
 void test_SdpSerializer_AddOriginator_NullOriginator( void )
@@ -553,6 +669,8 @@ void test_SdpSerializer_AddOriginator_NullConnInfoAddr( void )
 void test_SdpSerializer_AddOriginator_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    char expectOutput[] = "o=Jode 4294967296 4294967297 IN IP4 192.168.123.456\r\n";
+    size_t outputLength = strlen( expectOutput );
     char expectName[] = "Jode";
     char expectAddr[] = "192.168.123.456";
     uint64_t expectSessionID = 4294967296;
@@ -578,8 +696,8 @@ void test_SdpSerializer_AddOriginator_NullOutputBuffer( void )
                                           'o',
                                           &( originator ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -777,6 +895,38 @@ void test_SdpSerializer_AddConnectionInfo_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context in invalid.
+ */
+void test_SdpSerializer_AddConnectionInfo_InvalidContext( void )
+{
+    SdpResult_t result;
+    char expectAddr[] = "2001::100";
+    SdpConnectionInfo_t connInfo;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize originator. */
+    connInfo.networkType = SDP_NETWORK_IN;
+    connInfo.addressType = SDP_ADDRESS_IPV6;
+    connInfo.pAddress = expectAddr;
+    connInfo.addressLength = strlen( expectAddr );
+
+    result = SdpSerializer_AddConnectionInfo( &( serializerContext ),
+                                              'c',
+                                              &( connInfo ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Connection information is NULL.
  */
 void test_SdpSerializer_AddConnectionInfo_NullConnInfo( void )
@@ -885,6 +1035,8 @@ void test_SdpSerializer_AddConnectionInfo_InvalidAddressType( void )
 void test_SdpSerializer_AddConnectionInfo_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    char expectOutput[] = "c=IN IP6 2001::100\r\n";
+    size_t outputLength = strlen( expectOutput );
     char expectAddr[] = "2001::100";
     SdpConnectionInfo_t connInfo;
 
@@ -903,8 +1055,8 @@ void test_SdpSerializer_AddConnectionInfo_NullOutputBuffer( void )
                                               'c',
                                               &( connInfo ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -992,6 +1144,37 @@ void test_SdpSerializer_AddBandwidthInfo_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddBandwidthInfo_InvalidContext( void )
+{
+    SdpResult_t result;
+    char expectBwType[] = "CT";
+    SdpBandwidthInfo_t bwInfo;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize bandwidth information. */
+    bwInfo.pBwType = expectBwType;
+    bwInfo.bwTypeLength = strlen( expectBwType );
+    bwInfo.sdpBandwidthValue = 128;
+
+    result = SdpSerializer_AddBandwidthInfo( &( serializerContext ),
+                                             'b',
+                                             &( bwInfo ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Bandwidth is NULL.
  */
 void test_SdpSerializer_AddBandwidthInfo_NullBandwidthInfo( void )
@@ -1042,6 +1225,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullBandwidthType( void )
 void test_SdpSerializer_AddBandwidthInfo_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    char expectOutput[] = "b=CT:128\r\n";
+    size_t outputLength = strlen( expectOutput );
     char expectBwType[] = "CT";
     SdpBandwidthInfo_t bwInfo;
 
@@ -1059,8 +1244,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullOutputBuffer( void )
                                              'b',
                                              &( bwInfo ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -1147,6 +1332,37 @@ void test_SdpSerializer_AddTimeActive_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddTimeActive_InvalidContext( void )
+{
+    SdpResult_t result;
+    uint64_t expectStartTime = 4294967296;
+    uint64_t expectStopTime = 4294967297;
+    SdpTimeDescription_t timeDescription;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize time active. */
+    timeDescription.startTime = expectStartTime;
+    timeDescription.stopTime = expectStopTime;
+
+    result = SdpSerializer_AddTimeActive( &( serializerContext ),
+                                          't',
+                                          &( timeDescription ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Input time is NULL pointer.
  */
 void test_SdpSerializer_AddTimeActive_NullTimeDescription( void )
@@ -1171,6 +1387,8 @@ void test_SdpSerializer_AddTimeActive_NullTimeDescription( void )
 void test_SdpSerializer_AddTimeActive_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    char expectOutput[] = "t=4294967296 4294967297\r\n";
+    size_t outputLength = strlen( expectOutput );
     uint64_t expectStartTime = 4294967296;
     uint64_t expectStopTime = 4294967297;
     SdpTimeDescription_t timeDescription;
@@ -1188,8 +1406,8 @@ void test_SdpSerializer_AddTimeActive_NullOutputBuffer( void )
                                           't',
                                           &( timeDescription ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -1311,6 +1529,38 @@ void test_SdpSerializer_AddAttribute_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddAttribute_InvalidContext( void )
+{
+    SdpResult_t result;
+    char expectAttributeName[] = "recvonly";
+    SdpAttribute_t attribute;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize attribute. */
+    attribute.pAttributeName = expectAttributeName;
+    attribute.attributeNameLength = strlen( expectAttributeName );
+    attribute.pAttributeValue = NULL;
+    attribute.attributeValueLength = 0;
+
+    result = SdpSerializer_AddAttribute( &( serializerContext ),
+                                         'a',
+                                         &( attribute ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Attribute is NULL.
  */
 void test_SdpSerializer_AddAttribute_NullAttribute( void )
@@ -1363,6 +1613,8 @@ void test_SdpSerializer_AddAttribute_NullAttributeName( void )
 void test_SdpSerializer_AddAttribute_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    char expectOutput[] = "a=recvonly\r\n";
+    size_t outputLength = strlen( expectOutput );
     char expectAttributeName[] = "recvonly";
     SdpAttribute_t attribute;
 
@@ -1381,8 +1633,8 @@ void test_SdpSerializer_AddAttribute_NullOutputBuffer( void )
                                          'a',
                                          &( attribute ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -1527,6 +1779,46 @@ void test_SdpSerializer_AddMedia_NullContext( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Context is invalid.
+ */
+void test_SdpSerializer_AddMedia_InvalidContext( void )
+{
+    SdpResult_t result;
+    const char expectMediaName[] = "video";
+    uint16_t expectPort = 49170;
+    uint16_t expectPortNum = 2;
+    const char expectProtocol[] = "RTP/AVP";
+    const char expectFmt[] = "31";
+    SdpMedia_t media;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    /* Initialize media. */
+    media.pMedia = expectMediaName;
+    media.mediaLength = strlen( expectMediaName );
+    media.port = expectPort;
+    media.portNum = expectPortNum;
+    media.pProtocol = expectProtocol;
+    media.protocolLength = strlen( expectProtocol );
+    media.pFmt = expectFmt;
+    media.fmtLength = strlen( expectFmt );
+
+    result = SdpSerializer_AddMedia( &( serializerContext ),
+                                     'm',
+                                     &( media ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( serializerBuffer[ 0 ] ),
+                                 serializerBufferLength );
+}
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Media is NULL.
  */
 void test_SdpSerializer_AddMedia_NullMedia( void )
@@ -1622,6 +1914,8 @@ void test_SdpSerializer_AddMedia_NullFormat( void )
 void test_SdpSerializer_AddMedia_NullOutputBuffer( void )
 {
     SdpResult_t result;
+    const char expectOutput[] = "m=video 49170/2 RTP/AVP 31\r\n";
+    size_t outputLength = strlen( expectOutput );
     const char expectMediaName[] = "video";
     uint16_t expectPort = 49170;
     uint16_t expectPortNum = 2;
@@ -1648,8 +1942,8 @@ void test_SdpSerializer_AddMedia_NullOutputBuffer( void )
                                      'm',
                                      &( media ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -1792,8 +2086,10 @@ void test_SdpSerializer_Finalize_InvalidContext( void )
     const char * pBuffer = NULL;
     size_t length = 0;
 
-    /* We are passing zeroed out serializerContext (note that it is zeroed out
-     * in setup). */
+    /* Move current index past the total length. */
+    serializerContext.totalLength = 0;
+    serializerContext.currentIndex = 1;
+
     result = SdpSerializer_Finalize( &( serializerContext ),
                                      &( pBuffer ),
                                      &( length ) );

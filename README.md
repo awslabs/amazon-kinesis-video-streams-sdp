@@ -30,6 +30,27 @@ m=video 51372 RTP/AVP 99
 a=rtpmap:99 h263-1998/90000
 ```
 
+## Using the library
+
+### Serializer
+
+1. Call SdpSerializer_Init to start creating an SDP message.
+1. Keep appending info by calling corresponding APIs:
+   - To append string, call SdpSerializer_AddBuffer().
+   - To append originator, call SdpSerializer_AddOriginator().
+   - etc.
+1. Call SdpSerializer_Finalize() to get the result after serialization.
+
+### Deserializer
+
+1. Call SdpDeserializer_Init to start deserializing an SDP message.
+1. Keep calling SdpDeserializer_GetNext() to get next `<type>=<value>` in the SDP message.
+1. Call corresponding parse APIs to parse string into structure:
+   - If return type is SDP_TYPE_ORIGINATOR, call SdpDeserializer_ParseOriginator().
+   - If return type is SDP_TYPE_BANDWIDTH, call SdpDeserializer_ParseBandwidthInfo().
+   - etc.
+1. Loop to step 2 till you get SDP_RESULT_MESSAGE_END.
+
 ## Building Unit Tests
 
 ### Platform Prerequisites
@@ -94,7 +115,7 @@ git submodule update --checkout --init --recursive test/CMock
 
 ### Script to run Unit Test and generate code coverage report
 
-```
+```sh
 cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -DLIBRARY_LOG_LEVEL=LOG_DEBUG'
 make -C build all
 cd build
