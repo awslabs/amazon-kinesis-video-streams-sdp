@@ -11,9 +11,7 @@ SdpResult_t SdpSerializer_Init( SdpSerializerContext_t * pCtx,
 {
     SdpResult_t result = SDP_RESULT_OK;
 
-    if( ( pCtx == NULL ) ||
-        ( pBuffer == NULL ) ||
-        ( bufferLength == 0 ) )
+    if( pCtx == NULL )
     {
         result = SDP_RESULT_BAD_PARAM;
     }

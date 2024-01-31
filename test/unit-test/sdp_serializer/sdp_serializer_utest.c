@@ -72,27 +72,10 @@ void test_SdpSerializer_Init_NullBuffer( void )
 
     result = SdpSerializer_Init( &( serializerContext ), NULL, bufferLength );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL( NULL, serializerContext.pStart );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
-    TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
-}
-/*-----------------------------------------------------------*/
-
-/**
- * @brief Zero buffer length.
- */
-void test_SdpSerializer_Init_ZeroBufferLength( void )
-{
-    SdpResult_t result;
-    size_t bufferLength = 0;
-
-    result = SdpSerializer_Init( &( serializerContext ), &( serializerBuffer[ 0 ] ), bufferLength );
-
-    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-    TEST_ASSERT_EQUAL( NULL, serializerContext.pStart );
-    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
-    TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 1, serializerContext.totalLength );
 }
 /*-----------------------------------------------------------*/
 
@@ -2108,5 +2091,30 @@ void test_SdpSerializer_Finalize_InvalidContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EQUAL( NULL, pBuffer );
     TEST_ASSERT_EQUAL( 0, length );
+}
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The buffer in context is NULL.
+ */
+void test_SdpSerializer_Finalize_NullContextBuffer( void )
+{
+    SdpResult_t result;
+    const char * pBuffer = NULL;
+    size_t length = 0;
+
+    /* Initialize serializer context. */
+    serializerContext.pStart = NULL;
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
+
+    result = SdpSerializer_Finalize( &( serializerContext ),
+                                     &( pBuffer ),
+                                     &( length ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( NULL, pBuffer );
+    TEST_ASSERT_EQUAL( serializerBufferLength + 1, length );
 }
 /*-----------------------------------------------------------*/
