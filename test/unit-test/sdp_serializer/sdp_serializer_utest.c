@@ -41,6 +41,9 @@ void test_SdpSerializer_Init_Pass( void )
     result = SdpSerializer_Init( &( serializerContext ), &( buffer[ 0 ] ), bufferLength );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( &( buffer[ 0 ] ), serializerContext.pStart );
+    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( 1, serializerContext.totalLength );
 }
 /*-----------------------------------------------------------*/
 
@@ -70,6 +73,9 @@ void test_SdpSerializer_Init_NullBuffer( void )
     result = SdpSerializer_Init( &( serializerContext ), NULL, bufferLength );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( NULL, serializerContext.pStart );
+    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
 }
 /*-----------------------------------------------------------*/
 
@@ -84,6 +90,9 @@ void test_SdpSerializer_Init_ZeroBufferLength( void )
     result = SdpSerializer_Init( &( serializerContext ), &( serializerBuffer[ 0 ] ), bufferLength );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EQUAL( NULL, serializerContext.pStart );
+    TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
+    TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
 }
 /*-----------------------------------------------------------*/
 
@@ -2086,9 +2095,11 @@ void test_SdpSerializer_Finalize_InvalidContext( void )
     const char * pBuffer = NULL;
     size_t length = 0;
 
-    /* Move current index past the total length. */
-    serializerContext.totalLength = 0;
-    serializerContext.currentIndex = 1;
+    /* Initialize serializer context. */
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    /* Move currentIndex past totalLength. */
+    serializerContext.currentIndex = serializerBufferLength + 1;
 
     result = SdpSerializer_Finalize( &( serializerContext ),
                                      &( pBuffer ),
