@@ -52,6 +52,9 @@ void test_SdpDeserializer_Init_NullMsg( void )
     result = SdpDeserializer_Init( &( deserializerContext ), NULL, SDP_TEST_BUFFER_SIZE );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &deserializerContext,
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
 
@@ -65,6 +68,12 @@ void test_SdpDeserializer_Init_ZeroBufferLength( void )
     result = SdpDeserializer_Init( &( deserializerContext ), deserializerBuffer, 0 );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &deserializerContext,
+                                 sizeof( SdpDeserializerContext_t ) );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 deserializerBuffer,
+                                 deserializerBufferLength );
 }
 /*-----------------------------------------------------------*/
 
@@ -113,6 +122,9 @@ void test_SdpDeserializer_GetNext_Type_NULL( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), NULL, &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &deserializerContext,
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
 
@@ -128,6 +140,9 @@ void test_SdpDeserializer_GetNext_Value_NULL( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), NULL, &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &deserializerContext,
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
 
@@ -143,6 +158,9 @@ void test_SdpDeserializer_GetNext_Len_NULL( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), NULL );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &deserializerContext,
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
 
@@ -166,6 +184,9 @@ void test_SdpDeserializer_GetNext_Incorrect_Line_Len( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL( NULL, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( deserializerBufferLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( deserializerBufferLength - 2, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -189,6 +210,9 @@ void test_SdpDeserializer_GetNext_Incorrect_Message( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_EQUAL_NOT_FOUND, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -213,6 +237,9 @@ void test_SdpDeserializer_GetNext_Incorrect_End( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -236,6 +263,9 @@ void test_SdpDeserializer_GetNext_End( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_END, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -259,6 +289,9 @@ void test_SdpDeserializer_GetNext_Empty_Message( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_VALUE, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -285,6 +318,9 @@ void test_SdpDeserializer_GetNext_Pass_n( void )
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 /*-----------------------------------------------------------*/
 
@@ -311,6 +347,9 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
 /* =========================================================================== */
