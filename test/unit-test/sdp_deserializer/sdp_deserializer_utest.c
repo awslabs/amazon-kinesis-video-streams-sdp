@@ -53,7 +53,7 @@ void test_SdpDeserializer_Init_NullMsg( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
-                                 &deserializerContext,
+                                 &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
@@ -69,7 +69,7 @@ void test_SdpDeserializer_Init_ZeroBufferLength( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
-                                 &deserializerContext,
+                                 &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
                                  deserializerBuffer,
@@ -123,7 +123,7 @@ void test_SdpDeserializer_GetNext_Type_NULL( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
-                                 &deserializerContext,
+                                 &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
@@ -141,7 +141,7 @@ void test_SdpDeserializer_GetNext_Value_NULL( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
-                                 &deserializerContext,
+                                 &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/
@@ -159,7 +159,7 @@ void test_SdpDeserializer_GetNext_Len_NULL( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
     TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
-                                 &deserializerContext,
+                                 &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
 /*-----------------------------------------------------------*/

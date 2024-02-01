@@ -126,12 +126,12 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
 
     /* Input check. */
     if( ( pValue == NULL ) ||
-        ( pOriginator == NULL  ) )
+        ( pOriginator == NULL ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -147,8 +147,8 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
                 else if( numSpaces == 2 )
                 {
                     sscanfRetVal = sscanf( &( pValue[ start ] ),
-                                        "%" SDP_PRINT_FMT_UINT64,
-                                        &( pOriginator->sessionId ) );
+                                           "%" SDP_PRINT_FMT_UINT64,
+                                           &( pOriginator->sessionId ) );
 
                     if( sscanfRetVal != 1 )
                     {
@@ -159,8 +159,8 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
                 else /* numSpaces == 3 */
                 {
                     sscanfRetVal = sscanf( &( pValue[ start ] ),
-                                        "%" SDP_PRINT_FMT_UINT64,
-                                        &( pOriginator->sessionVersion ) );
+                                           "%" SDP_PRINT_FMT_UINT64,
+                                           &( pOriginator->sessionVersion ) );
 
                     if( sscanfRetVal != 1 )
                     {
@@ -210,12 +210,12 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
 
     /* Input check. */
     if( ( pValue == NULL ) ||
-        ( pConnInfo == NULL  ) )
+        ( pConnInfo == NULL ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -301,7 +301,7 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
     SdpResult_t result = SDP_RESULT_OK;
     size_t i, numColon = 0;
     int sscanfRetVal;
-    
+
     /* Input check. */
     if( ( pValue == NULL ) ||
         ( pBandwidthInfo == NULL ) )
@@ -309,7 +309,7 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -320,8 +320,8 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
                 pBandwidthInfo->bwTypeLength = i;
 
                 sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
-                                    "%" SDP_PRINT_FMT_UINT64,
-                                    &( pBandwidthInfo->sdpBandwidthValue ) );
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pBandwidthInfo->sdpBandwidthValue ) );
                 if( sscanfRetVal != 1 )
                 {
                     result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
@@ -348,7 +348,7 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
     SdpResult_t result = SDP_RESULT_OK;
     size_t i, numSpaces = 0;
     int sscanfRetVal;
-    
+
     /* Input check. */
     if( ( pValue == NULL ) ||
         ( pTimeDescription == NULL ) )
@@ -356,7 +356,7 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -366,8 +366,8 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
 
                 /* Parse start-time. */
                 sscanfRetVal = sscanf( &( pValue[ 0 ] ),
-                                    "%" SDP_PRINT_FMT_UINT64,
-                                    &( pTimeDescription->startTime ) );
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pTimeDescription->startTime ) );
 
                 if( sscanfRetVal != 1 )
                 {
@@ -377,8 +377,8 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
 
                 /* Parse stop-time. */
                 sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
-                                    "%" SDP_PRINT_FMT_UINT64,
-                                    &( pTimeDescription->stopTime ) );
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pTimeDescription->stopTime ) );
 
                 if( sscanfRetVal != 1 )
                 {
@@ -405,7 +405,7 @@ SdpResult_t SdpDeserializer_ParseAttribute( const char * pValue,
 {
     SdpResult_t result = SDP_RESULT_OK;
     size_t i;
-    
+
     /* Input check. */
     if( ( pValue == NULL ) ||
         ( pAttribute == NULL ) )
@@ -413,7 +413,7 @@ SdpResult_t SdpDeserializer_ParseAttribute( const char * pValue,
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -450,7 +450,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
     SdpResult_t result = SDP_RESULT_OK;
     size_t i, j, start = 0, numSpaces = 0;
     int sscanfRetVal;
-    
+
     /* Input check. */
     if( ( pValue == NULL ) ||
         ( pMedia == NULL ) )
@@ -458,7 +458,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
         result = SDP_RESULT_BAD_PARAM;
     }
 
-    if (result == SDP_RESULT_OK)
+    if( result == SDP_RESULT_OK )
     {
         for( i = 0; i < valueLength; i++ )
         {
@@ -474,8 +474,8 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
                 else if( numSpaces == 2 )
                 {
                     sscanfRetVal = sscanf( &( pValue[ start ] ),
-                                        "%" SDP_PRINT_FMT_UINT16,
-                                        &( pMedia->port ) );
+                                           "%" SDP_PRINT_FMT_UINT16,
+                                           &( pMedia->port ) );
 
                     if( sscanfRetVal != 1 )
                     {
@@ -490,8 +490,8 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
                         if( pValue[ j ] == '/' )
                         {
                             sscanfRetVal = sscanf( &( pValue[ j + 1 ] ),
-                                                "%" SDP_PRINT_FMT_UINT16,
-                                                &( pMedia->portNum ) );
+                                                   "%" SDP_PRINT_FMT_UINT16,
+                                                   &( pMedia->portNum ) );
 
                             if( sscanfRetVal != 1 )
                             {
