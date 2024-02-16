@@ -1,23 +1,20 @@
 cmake_minimum_required(VERSION 3.6.3)
-project(kvsSdp C)
+project(kvssdp C)
 
-set(TYPE_OF_LIB SHARED)
-if (BUILD_STATIC)
-  set(TYPE_OF_LIB STATIC)
-endif()
+include(sdpFilePaths.cmake)
 
-file(GLOB KVS_SDP_SOURCE_FILES_BASE "source/*.c")
+include_directories(${SDP_INCLUDE_PUBLIC_DIRS})
 
-include_directories(source/include)
+add_library(kvssdp ${SDP_SOURCES})
 
-add_library(kvsSdp ${TYPE_OF_LIB} ${KVS_SDP_SOURCE_FILES_BASE})
-
+# install header files
 install(
-    DIRECTORY source/include
-	DESTINATION .)
+    FILES ${SDP_INCLUDE_PUBLIC_FILES}
+    DESTINATION include/kvssdp)
 
+# install SDP library
 install(
-    TARGETS kvsSdp
+    TARGETS kvssdp
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
