@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.6.3)
-project(kvssdp C)
+project(kvssdp)
 
 include(sdpFilePaths.cmake)
 
-include_directories(${SDP_INCLUDE_PUBLIC_DIRS})
-
 add_library(kvssdp ${SDP_SOURCES})
+
+target_include_directories(kvssdp PUBLIC
+                           ${SDP_INCLUDE_PUBLIC_DIRS})
 
 # install header files
 install(
