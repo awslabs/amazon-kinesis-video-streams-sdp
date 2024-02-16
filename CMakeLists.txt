@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6.3)
-project(kvssdp)
+project(kvssdp C)
 
 include(sdpFilePaths.cmake)
 
