@@ -89,25 +89,25 @@ git submodule update --checkout --init --recursive test/unit-test/CMock
 ```
 
 ### Platform Prerequisites
-- For running unit tests
-    - C99 compiler like gcc
-    - CMake 3.13.0 or later
-    - Ruby 2.0.0 or later is additionally required for the CMock test framework (that we use).
-- For running the coverage target, gcov and lcov are additionally required.
+- For running unit tests:
+    - C99 compiler like gcc.
+    - CMake 3.13.0 or later.
+    - Ruby 2.0.0 or later (It is required for the CMock test framework that we use).
+- For running the coverage target, gcov and lcov are required.
 
 ### Steps to build Unit Tests
 1. Go to the root directory of this repository. (Make sure that the CMock submodule is cloned as described in [Checkout CMock Submodule](#checkout-cmock-submodule))
 1. Run the cmake command: 
-    ```
+    ```sh
     cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG 
     ```
 1. Run this command to build the library and unit tests:
-    ```
+    ```sh
     make -C build all
     ```
 1. The generated test executables will be present in build/bin/tests folder.
 1. Run below commands to execute all tests and view the test run summary.
-    ```
+    ```sh
     cd build && ctest -E system --output-on-failure
     ```
 

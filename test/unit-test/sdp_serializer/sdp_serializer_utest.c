@@ -1,10 +1,10 @@
-/* Include Unity header */
+/* Unity includes. */
 #include "unity.h"
+#include "catch_assert.h"
 
-/* Include standard libraries */
+/* Standard includes. */
 #include <string.h>
 #include <stdint.h>
-#include "catch_assert.h"
 
 #include "sdp_serializer.h"
 /* ===========================  EXTERN VARIABLES  =========================== */
@@ -24,7 +24,6 @@ void setUp(void)
 
 void tearDown(void)
 {
-    // clean stuff up here
 }
 
 /* ==============================  Test Cases  ============================== */
@@ -42,6 +41,8 @@ void test_SdpSerializer_Init_Pass( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -55,6 +56,8 @@ void test_SdpSerializer_Init_NullCtx( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input buffer is NULL.
  */
@@ -66,6 +69,8 @@ void test_SdpSerializer_Init_NullBuffer( void )
     result = SdpSerializer_Init( &serializerContext, NULL, bufferLength );
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid.
@@ -90,6 +95,8 @@ void test_SdpSerializer_AddBuffer_Pass( void )
     TEST_ASSERT_EQUAL_STRING( &expectOutput, &serializerBuffer[0] );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -105,6 +112,8 @@ void test_SdpSerializer_AddBuffer_NullContext( void )
                                       inputLength );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input buffer is NULL.
@@ -125,6 +134,8 @@ void test_SdpSerializer_AddBuffer_NullBuffer( void )
                                       inputLength );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input string length is 0.
@@ -147,6 +158,8 @@ void test_SdpSerializer_AddBuffer_ZeroBufferLength( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Output buffer is NULL.
  */
@@ -167,6 +180,8 @@ void test_SdpSerializer_AddBuffer_NullOutputBuffer( void )
                                       inputLength );
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
@@ -189,6 +204,8 @@ void test_SdpSerializer_AddBuffer_OutputBufferNotEnough( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are valid.
  */
@@ -210,6 +227,8 @@ void test_SdpSerializer_AddU32_Pass( void )
     TEST_ASSERT_EQUAL_STRING( &expectOutput, &serializerBuffer[0] );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -223,6 +242,8 @@ void test_SdpSerializer_AddU32_NullContext( void )
                                    version );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -243,6 +264,8 @@ void test_SdpSerializer_AddU32_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -262,6 +285,8 @@ void test_SdpSerializer_AddU32_OutputBufferNotEnough( void )
                                    version );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid.
@@ -284,6 +309,8 @@ void test_SdpSerializer_AddU64_Pass( void )
     TEST_ASSERT_EQUAL_STRING( &expectOutput, &serializerBuffer[0] );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -297,6 +324,8 @@ void test_SdpSerializer_AddU64_NullContext( void )
                                    version );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -317,6 +346,8 @@ void test_SdpSerializer_AddU64_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -336,6 +367,8 @@ void test_SdpSerializer_AddU64_OutputBufferNotEnough( void )
                                    version );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid with IPv4 address.
@@ -374,6 +407,8 @@ void test_SdpSerializer_AddOriginator_PassIPv4( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are valid with IPv6 address.
  */
@@ -411,6 +446,8 @@ void test_SdpSerializer_AddOriginator_PassIPv6( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -439,6 +476,8 @@ void test_SdpSerializer_AddOriginator_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input originator is NULL.
  */
@@ -456,6 +495,8 @@ void test_SdpSerializer_AddOriginator_NullOriginator( void )
                                           NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input address of connection information is NULL.
@@ -488,6 +529,8 @@ void test_SdpSerializer_AddOriginator_NullConnInfoAddr( void )
                                           &orginator );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -525,6 +568,8 @@ void test_SdpSerializer_AddOriginator_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -560,6 +605,8 @@ void test_SdpSerializer_AddOriginator_OutputBufferNotEnough( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Network type in connection information is invalid.
  */
@@ -592,6 +639,8 @@ void test_SdpSerializer_AddOriginator_InvalidNetworkType( void )
                                           &orginator );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Address type in connection information is invalid.
@@ -626,6 +675,8 @@ void test_SdpSerializer_AddOriginator_InvalidAddressType( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are valid with IPv4 address.
  */
@@ -655,6 +706,8 @@ void test_SdpSerializer_AddConnectionInfo_PassIPv4( void )
     TEST_ASSERT_EQUAL_STRING( &expectOutput, &serializerBuffer[0] );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid with IPv6 address.
@@ -686,6 +739,8 @@ void test_SdpSerializer_AddConnectionInfo_PassIPv6( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context in NULL.
  */
@@ -707,6 +762,8 @@ void test_SdpSerializer_AddConnectionInfo_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Connection information is NULL.
  */
@@ -724,6 +781,8 @@ void test_SdpSerializer_AddConnectionInfo_NullConnInfo( void )
                                               NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Address is NULL.
@@ -749,6 +808,8 @@ void test_SdpSerializer_AddConnectionInfo_NullAddress( void )
                                               &connInfo );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Network type is invalid.
@@ -776,6 +837,8 @@ void test_SdpSerializer_AddConnectionInfo_InvalidNetworkType( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Address type is invalid.
  */
@@ -801,6 +864,8 @@ void test_SdpSerializer_AddConnectionInfo_InvalidAddressType( void )
                                               &connInfo );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -831,6 +896,8 @@ void test_SdpSerializer_AddConnectionInfo_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -858,6 +925,8 @@ void test_SdpSerializer_AddConnectionInfo_OutputBufferNotEnough( void )
                                               &connInfo );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input is valid.
@@ -888,6 +957,8 @@ void test_SdpSerializer_AddBandwidthInfo_Pass( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -908,6 +979,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Bandwidth is NULL.
  */
@@ -925,6 +998,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullBandwidthInfo( void )
                                              NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Bandwidth type is NULL.
@@ -949,6 +1024,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullBandwidthType( void )
                                              &bwInfo );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -978,6 +1055,8 @@ void test_SdpSerializer_AddBandwidthInfo_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -1004,6 +1083,8 @@ void test_SdpSerializer_AddBandwidthInfo_OutputBufferNotEnough( void )
                                              &bwInfo );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input is valid.
@@ -1034,6 +1115,8 @@ void test_SdpSerializer_AddTimeActive_Pass( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -1054,6 +1137,8 @@ void test_SdpSerializer_AddTimeActive_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input time is NULL pointer.
  */
@@ -1071,6 +1156,8 @@ void test_SdpSerializer_AddTimeActive_NullTimeDescription( void )
                                           NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -1100,6 +1187,8 @@ void test_SdpSerializer_AddTimeActive_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -1126,6 +1215,8 @@ void test_SdpSerializer_AddTimeActive_OutputBufferNotEnough( void )
                                           &timeDescription );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input is valid with attribute value.
@@ -1158,6 +1249,8 @@ void test_SdpSerializer_AddAttribute_Pass( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input is valid without attribute value.
  */
@@ -1188,6 +1281,8 @@ void test_SdpSerializer_AddAttribute_PassNoValue( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -1209,6 +1304,8 @@ void test_SdpSerializer_AddAttribute_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Attribute is NULL.
  */
@@ -1226,6 +1323,8 @@ void test_SdpSerializer_AddAttribute_NullAttribute( void )
                                          NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Attribute name is NULL.
@@ -1251,6 +1350,8 @@ void test_SdpSerializer_AddAttribute_NullAttributeName( void )
                                          &attribute );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -1281,6 +1382,8 @@ void test_SdpSerializer_AddAttribute_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -1308,6 +1411,8 @@ void test_SdpSerializer_AddAttribute_OutputBufferNotEnough( void )
                                          &attribute );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are all valid.
@@ -1347,6 +1452,8 @@ void test_SdpSerializer_AddMedia_Pass( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs (except for port number) are all valid.
  */
@@ -1384,6 +1491,8 @@ void test_SdpSerializer_AddMedia_PassNoPortNum( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -1413,6 +1522,8 @@ void test_SdpSerializer_AddMedia_NullContext( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Media is NULL.
  */
@@ -1430,6 +1541,8 @@ void test_SdpSerializer_AddMedia_NullMedia( void )
                                      NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Protocol in media is NULL.
@@ -1464,6 +1577,8 @@ void test_SdpSerializer_AddMedia_NullProtocol( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Format is NULL.
  */
@@ -1496,6 +1611,8 @@ void test_SdpSerializer_AddMedia_NullFormat( void )
                                      &media );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Output buffer is NULL.
@@ -1534,6 +1651,8 @@ void test_SdpSerializer_AddMedia_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The remaining size of output buffer is not enough for adding buffer.
  */
@@ -1570,6 +1689,8 @@ void test_SdpSerializer_AddMedia_OutputBufferNotEnough( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are all valid.
  */
@@ -1595,6 +1716,8 @@ void test_SdpSerializer_Finalize_Pass( void )
     TEST_ASSERT_EQUAL( expectOutputLength, length );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Context is NULL.
  */
@@ -1609,6 +1732,8 @@ void test_SdpSerializer_Finalize_NullContext( void )
                                      &length );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Input buffer is NULL.
@@ -1632,6 +1757,8 @@ void test_SdpSerializer_Finalize_NullBuffer( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input length address is NULL.
  */
@@ -1653,3 +1780,5 @@ void test_SdpSerializer_Finalize_NullLength( void )
                                      NULL );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/

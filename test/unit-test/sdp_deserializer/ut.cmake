@@ -8,42 +8,40 @@ message( STATUS "${project_name}" )
 
 # =====================  Create your mock here  (edit)  ========================
 
-# list the files to mock here
+# List the files to mock here.
 list(APPEND mock_list
             "${MODULE_ROOT_DIR}/source/include/sdp_data_types.h"
         )
-# list the directories your mocks need
+# List the directories your mocks need.
 list(APPEND mock_include_list
             ${SDP_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
         )
 
-#list the definitions of your mocks to control what to be included
+# List the definitions of your mocks to control what to be included.
 list(APPEND mock_define_list
             ""
        )
 
 # ================= Create the library under test here (edit) ==================
 
-# list the files you would like to test here
+# List the files you would like to test here.
 list(APPEND real_source_files
-            ${MODULE_ROOT_DIR}/source/sdp_deserializer.c
-	)
-# list the directories the module under test includes
+            ${MODULE_ROOT_DIR}/source/sdp_deserializer.c )
+
+# List the directories the module under test includes.
 list(APPEND real_include_directories
             ${SDP_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
-            ${CMOCK_DIR}/vendor/unity/src
-	)
+            ${CMOCK_DIR}/vendor/unity/src )
 
 # =====================  Create UnitTest Code here (edit)  =====================
 
-# list the directories your test needs to include
+# List the directories your test needs to include.
 list(APPEND test_include_directories
             ${CMOCK_DIR}/vendor/unity/src
             ${SDP_INCLUDE_PUBLIC_DIRS}
-            ${MODULE_ROOT_DIR}/test/unit-test
-        )
+            ${MODULE_ROOT_DIR}/test/unit-test )
 
 # =============================  (end edit)  ===================================
 
@@ -54,23 +52,19 @@ create_mock_list(${mock_name}
                 "${mock_list}"
                 "${MODULE_ROOT_DIR}/test/unit-test/cmock/project.yml"
                 "${mock_include_list}"
-                "${mock_define_list}"
-        )
+                "${mock_define_list}" )
 
 create_real_library(${real_name}
                     "${real_source_files}"
                     "${real_include_directories}"
-                    "${mock_name}"
-        )
+                    "${mock_name}" )
 
 list(APPEND utest_link_list
             -l${mock_name}
-            lib${real_name}.a
-        )
+            lib${real_name}.a )
 
 list(APPEND utest_dep_list
-            ${real_name}
-        )
+            ${real_name} )
 
 set(utest_name "${project_name}_utest")
 set(utest_source "${project_name}/${project_name}_utest.c")
@@ -79,5 +73,4 @@ create_test(${utest_name}
             ${utest_source}
             "${utest_link_list}"
             "${utest_dep_list}"
-            "${test_include_directories}"
-        )
+            "${test_include_directories}" )

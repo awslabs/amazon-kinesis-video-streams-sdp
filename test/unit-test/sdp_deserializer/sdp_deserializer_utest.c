@@ -1,10 +1,10 @@
-/* Include Unity header */
+/* Unity includes. */
 #include "unity.h"
+#include "catch_assert.h"
 
-/* Include standard libraries */
+/* Standard includes. */
 #include <string.h>
 #include <stdint.h>
-#include "catch_assert.h"
 
 #include "sdp_deserializer.h"
 /* ===========================  EXTERN VARIABLES  =========================== */
@@ -38,8 +38,9 @@ void test_SdpDeserializer_Init_NullCtx( void )
 
     result = SdpDeserializer_Init( NULL, deserializerBuffer, SDP_TEST_BUFFER_SIZE );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief SdpMessage is NULL.
@@ -52,6 +53,8 @@ void test_SdpDeserializer_Init_NullMsg( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief MessageLength is 0.
  */
@@ -62,6 +65,8 @@ void test_SdpDeserializer_Init_ZeroBufferLength( void )
     result = SdpDeserializer_Init( &deserializerContext, deserializerBuffer, 0 );
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid.
@@ -77,7 +82,7 @@ void test_SdpDeserializer_Init_Pass( void )
     TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex);
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief SdpDeserializerContext is NULL.
@@ -94,6 +99,8 @@ void test_SdpDeserializer_GetNext_Ctx_NULL( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief type is NULL.
  */
@@ -107,6 +114,8 @@ void test_SdpDeserializer_GetNext_Type_NULL( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief pValue is NULL.
@@ -122,6 +131,8 @@ void test_SdpDeserializer_GetNext_Value_NULL( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief valueLength is NULL.
  */
@@ -135,6 +146,8 @@ void test_SdpDeserializer_GetNext_Len_NULL( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with incorrect line length.
@@ -157,6 +170,8 @@ void test_SdpDeserializer_GetNext_Incorrect_Line_Len( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed without '='.
  */
@@ -178,6 +193,8 @@ void test_SdpDeserializer_GetNext_Incorrect_Message( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_EQUAL_NOT_FOUND, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed message ending without '\n'.
@@ -202,6 +219,8 @@ void test_SdpDeserializer_GetNext_Incorrect_End( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The current index has reached the end of the message'.
  */
@@ -222,8 +241,9 @@ void test_SdpDeserializer_GetNext_End( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_END, result );
-    
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is empty.
@@ -245,8 +265,9 @@ void test_SdpDeserializer_GetNext_Empty_Message( void )
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_VALUE, result );
-    
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is correct ending with '\r\n''.
@@ -271,8 +292,9 @@ void test_SdpDeserializer_GetNext_Pass_n( void )
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
-    
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is correct ending with '\n'.
@@ -297,10 +319,9 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
-    
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed message without SessionId.
@@ -320,6 +341,8 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId( void )
     TEST_ASSERT_EQUAL( 5, originator.userNameLength);
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed message without SessionId and incorrect sscanfRetVal return value.
  */
@@ -334,6 +357,8 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId2( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_ID, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed message without sessionVersion.
@@ -354,6 +379,8 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion( void )
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed message without sessionVersion and incorrect sscanfRetVal return value.
  */
@@ -372,6 +399,8 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion2( void )
     TEST_ASSERT_EQUAL( 5, originator.userNameLength);
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed message without ConnectionInfo.
@@ -392,6 +421,8 @@ void test_SdpDeserializer_ParseOriginator_NoConnectionInfo( void )
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
     TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion);
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is valid.
@@ -418,7 +449,7 @@ void test_SdpDeserializer_ParseOriginator_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( addv4,originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with incorrect networkType length.
@@ -435,6 +466,8 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkTypeLength( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed with incorrect networkType.
  */
@@ -449,6 +482,8 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkType( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with incorrect addressType.
@@ -465,6 +500,8 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressType( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed with incorrect addressType length.
  */
@@ -479,6 +516,8 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressTypeLength( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with no pAddress.
@@ -495,6 +534,8 @@ void test_SdpDeserializer_ParseConnectionInfo_NoAddress( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief The message is malformed with redundant information.
  */
@@ -509,6 +550,8 @@ void test_SdpDeserializer_ParseConnectionInfo_RedundantInfo( void )
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is valid with IPv4 networkType.
@@ -529,6 +572,8 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv4( void )
     TEST_ASSERT_EQUAL( strlen( addv4 ), ConnInfo.addressLength);
     TEST_ASSERT_EQUAL_STRING_LEN( addv4, ConnInfo.pAddress, ConnInfo.addressLength );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is valid with IPv6 networkType.
@@ -551,7 +596,7 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv6( void )
     TEST_ASSERT_EQUAL_STRING_LEN( addv6, ConnInfo.pAddress, ConnInfo.addressLength );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with no sdpBandwidthValue.
@@ -566,8 +611,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoBandwidthValue( void )
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed without colon.
@@ -582,8 +628,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoColon( void )
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
     
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The bandwidth valid.
@@ -602,10 +649,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
     TEST_ASSERT_EQUAL( strlen(BwType), bandwidth.bwTypeLength );
     TEST_ASSERT_EQUAL( 128, bandwidth.sdpBandwidthValue );
     TEST_ASSERT_EQUAL_STRING_LEN( BwType, bandwidth.pBwType, bandwidth.bwTypeLength );
-
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed without time.
@@ -620,8 +666,9 @@ void test_SdpDeserializer_ParseTimeActive_WithoutTime( void )
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_START_TIME, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed without stopTime.
@@ -636,8 +683,9 @@ void test_SdpDeserializer_ParseTimeActive_NoStopTime( void )
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed without space and stopTime.
@@ -652,8 +700,9 @@ void test_SdpDeserializer_ParseTimeActive_NoSpace( void )
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
-
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is valid.
@@ -671,6 +720,8 @@ void test_SdpDeserializer_ParseTimeActive_Pass( void )
     TEST_ASSERT_EQUAL( 0, timeDescription.startTime );
     TEST_ASSERT_EQUAL( 0, timeDescription.stopTime );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid.
@@ -696,6 +747,8 @@ void test_SdpDeserializer_ParseAttribute_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeValue, attribute.pAttributeValue, attribute.attributeValueLength );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are valid without attribute value.
  */
@@ -717,6 +770,8 @@ void test_SdpDeserializer_ParseAttribute_PassNoAttributeValue( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( NULL, attribute.pAttributeValue, attribute.attributeValueLength );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Inputs are valid.
@@ -751,6 +806,8 @@ void test_SdpDeserializer_ParseMedia_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectFmt, media.pFmt, media.fmtLength );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Inputs are valid without number of port.
  */
@@ -784,6 +841,8 @@ void test_SdpDeserializer_ParseMedia_PassNoPortNum( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectFmt, media.pFmt, media.fmtLength );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Port is invalid so SdpDeserializer_ParseMedia returns error.
  */
@@ -799,6 +858,8 @@ void test_SdpDeserializer_ParseMedia_InvalidPort( void )
     result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORT, result );
 }
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Port number is invalid so SdpDeserializer_ParseMedia returns error.
@@ -816,6 +877,8 @@ void test_SdpDeserializer_ParseMedia_InvalidPortNum( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM, result );
 }
 
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Input media lack format information.
  */
@@ -832,4 +895,4 @@ void test_SdpDeserializer_ParseMedia_InvalidMediaString( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
