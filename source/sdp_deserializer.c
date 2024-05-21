@@ -1,6 +1,8 @@
+/* Standard includes. */
 #include <stdio.h>
 #include <string.h>
 
+/* Interface includes. */
 #include "sdp_deserializer.h"
 
 SdpResult_t SdpDeserializer_Init( SdpDeserializerContext_t * pCtx,
@@ -57,7 +59,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
 
         if( remainingLength < 3 )
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -85,7 +87,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
             result = SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND;
         }
 
-        if ( result == SDP_RESULT_OK )
+        if( result == SDP_RESULT_OK )
         {
             if( pCtx->pStart[ i - 1 ] == '\r' )
             {
@@ -122,44 +124,61 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
     size_t i, start = 0, numSpaces = 0;
     int sscanfRetVal;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pOriginator == NULL ) )
     {
-        if( pValue[ i ] == ' ' )
+        result = SDP_RESULT_BAD_PARAM;
+    }
+
+    if( result == SDP_RESULT_OK )
+    {
+        for( i = 0; i < valueLength; i++ )
         {
-            numSpaces += 1;
-
-            if( numSpaces == 1 )
+            if( pValue[ i ] == ' ' )
             {
-                pOriginator->pUserName = &( pValue[ start ] );
-                pOriginator->userNameLength = i - start;
-            }
-            else if( numSpaces == 2 )
-            {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT64, &( pOriginator->sessionId ) );
+                numSpaces += 1;
 
-                if( sscanfRetVal != 1 )
+                if( numSpaces == 1 )
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_ID;
-                    break;
+                    pOriginator->pUserName = &( pValue[ start ] );
+                    pOriginator->userNameLength = i - start;
                 }
-            }
-            else /* numSpaces == 3 */
-            {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT64, &( pOriginator->sessionVersion ) );
+                else if( numSpaces == 2 )
+                {
+                    sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                           "%" SDP_PRINT_FMT_UINT64,
+                                           &( pOriginator->sessionId ) );
 
-                if( sscanfRetVal != 1 )
-                {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_VERSION;
-                    break;
+                    if( sscanfRetVal != 1 )
+                    {
+                        result = SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_ID;
+                        break;
+                    }
                 }
-                else
+                else /* numSpaces == 3 */
                 {
-                    /* break to parse connection info inside of originator. */
-                    break;
-                }
-            }
+                    sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                           "%" SDP_PRINT_FMT_UINT64,
+                                           &( pOriginator->sessionVersion ) );
 
-            start = i + 1;
+                    if( sscanfRetVal != 1 )
+                    {
+                        result = SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_VERSION;
+                        break;
+                    }
+                    else
+                    {
+                        /* Skip over space. */
+                        start = i + 1;
+
+                        /* break to parse connection info inside of originator. */
+                        break;
+                    }
+                }
+
+                start = i + 1;
+            }
         }
     }
 
@@ -168,11 +187,13 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
         if( i < valueLength )
         {
             /* Originator part is parsed, continue to parse connection info. */
-            result = SdpDeserializer_ParseConnectionInfo( &( pValue[ i + 1 ] ), valueLength - ( i + 1 ), &pOriginator->connectionInfo );
+            result = SdpDeserializer_ParseConnectionInfo( &( pValue[ start ] ),
+                                                          valueLength - start,
+                                                          &( pOriginator->connectionInfo ) );
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -187,19 +208,34 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
     SdpResult_t result = SDP_RESULT_OK;
     size_t i, start = 0, numSpaces = 0;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pConnInfo == NULL ) )
     {
-        if( pValue[ i ] == ' ' )
-        {
-            numSpaces += 1;
+        result = SDP_RESULT_BAD_PARAM;
+    }
 
-            if( numSpaces == 1 )
+    if( result == SDP_RESULT_OK )
+    {
+        for( i = 0; i < valueLength; i++ )
+        {
+            if( pValue[ i ] == ' ' )
             {
-                if( ( i - start ) == 2 )
+                numSpaces += 1;
+
+                if( numSpaces == 1 )
                 {
-                    if( strncmp( &( pValue[ start ] ), "IN", 2 ) == 0 )
+                    if( ( i - start ) == 2 )
                     {
-                        pConnInfo->networkType = SDP_NETWORK_IN;
+                        if( strncmp( &( pValue[ start ] ), "IN", 2 ) == 0 )
+                        {
+                            pConnInfo->networkType = SDP_NETWORK_IN;
+                        }
+                        else
+                        {
+                            result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE;
+                            break;
+                        }
                     }
                     else
                     {
@@ -207,23 +243,23 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
                         break;
                     }
                 }
-                else
+                else if( numSpaces == 2 )
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE;
-                    break;
-                }
-            }
-            else if( numSpaces == 2 )
-            {
-                if( ( i - start ) == 3 )
-                {
-                    if( strncmp( &( pValue[ start ] ), "IP4", 3 ) == 0 )
+                    if( ( i - start ) == 3 )
                     {
-                        pConnInfo->addressType = SDP_ADDRESS_IPV4;
-                    }
-                    else if( strncmp( &( pValue[ start ] ), "IP6", 3 ) == 0 )
-                    {
-                        pConnInfo->addressType = SDP_ADDRESS_IPV6;
+                        if( strncmp( &( pValue[ start ] ), "IP4", 3 ) == 0 )
+                        {
+                            pConnInfo->addressType = SDP_ADDRESS_IPV4;
+                        }
+                        else if( strncmp( &( pValue[ start ] ), "IP6", 3 ) == 0 )
+                        {
+                            pConnInfo->addressType = SDP_ADDRESS_IPV6;
+                        }
+                        else
+                        {
+                            result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE;
+                            break;
+                        }
                     }
                     else
                     {
@@ -233,16 +269,11 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
                 }
                 else
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE;
-                    break;
+                    result = SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO;
                 }
-            }
-            else
-            {
-                result = SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO;
-            }
 
-            start = i + 1;
+                start = i + 1;
+            }
         }
     }
 
@@ -255,7 +286,7 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
@@ -271,26 +302,39 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
     size_t i, numColon = 0;
     int sscanfRetVal;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pBandwidthInfo == NULL ) )
     {
-        if( pValue[ i ] == ':' )
-        {
-            numColon += 1;
-            pBandwidthInfo->pBwType = &( pValue[ 0 ] );
-            pBandwidthInfo->bwTypeLength = i;
-
-            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ), "%" SDP_PRINT_FMT_UINT64, &( pBandwidthInfo->sdpBandwidthValue ) );
-
-            if( sscanfRetVal != 1 )
-            {
-                result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
-            }
-            break;
-        }
+        result = SDP_RESULT_BAD_PARAM;
     }
-    if ( numColon == 0 )
+
+    if( result == SDP_RESULT_OK )
     {
-        result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+        for( i = 0; i < valueLength; i++ )
+        {
+            if( pValue[ i ] == ':' )
+            {
+                numColon += 1;
+                pBandwidthInfo->pBwType = &( pValue[ 0 ] );
+                pBandwidthInfo->bwTypeLength = i;
+
+                sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pBandwidthInfo->sdpBandwidthValue ) );
+                if( sscanfRetVal != 1 )
+                {
+                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
+                }
+
+                break;
+            }
+        }
+
+        if( numColon == 0 )
+        {
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
+        }
     }
 
     return result;
@@ -305,35 +349,52 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
     size_t i, numSpaces = 0;
     int sscanfRetVal;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pTimeDescription == NULL ) )
     {
-        if( pValue[ i ] == ' ' )
-        {
-            numSpaces += 1;
-            /* Parse start-time. */
-            sscanfRetVal = sscanf( &( pValue[ 0 ] ), "%" SDP_PRINT_FMT_UINT64, &( pTimeDescription->startTime ) );
+        result = SDP_RESULT_BAD_PARAM;
+    }
 
-            if( sscanfRetVal != 1 )
+    if( result == SDP_RESULT_OK )
+    {
+        for( i = 0; i < valueLength; i++ )
+        {
+            if( pValue[ i ] == ' ' )
             {
-                result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_START_TIME;
+                numSpaces += 1;
+
+                /* Parse start-time. */
+                sscanfRetVal = sscanf( &( pValue[ 0 ] ),
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pTimeDescription->startTime ) );
+
+                if( sscanfRetVal != 1 )
+                {
+                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_START_TIME;
+                    break;
+                }
+
+                /* Parse stop-time. */
+                sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
+                                       "%" SDP_PRINT_FMT_UINT64,
+                                       &( pTimeDescription->stopTime ) );
+
+                if( sscanfRetVal != 1 )
+                {
+                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME;
+                }
+
                 break;
             }
+        }
 
-            /* Parse stop-time. */
-            sscanfRetVal = sscanf( &( pValue[ i + 1 ] ), "%" SDP_PRINT_FMT_UINT64, &( pTimeDescription->stopTime ) );
-
-            if( sscanfRetVal != 1 )
-            {
-                result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME;
-            }
-            break;
+        if( numSpaces == 0 )
+        {
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 
-    if ( numSpaces == 0 )
-    {
-        result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
-    }
     return result;
 }
 /*-----------------------------------------------------------*/
@@ -345,27 +406,37 @@ SdpResult_t SdpDeserializer_ParseAttribute( const char * pValue,
     SdpResult_t result = SDP_RESULT_OK;
     size_t i;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pAttribute == NULL ) )
     {
-        if( pValue[ i ] == ':' )
-        {
-            pAttribute->pAttributeName = &( pValue[ 0 ] );
-            pAttribute->attributeNameLength = i;
-
-            pAttribute->pAttributeValue = &( pValue[ i + 1 ] );
-            pAttribute->attributeValueLength = valueLength - ( i + 1 );
-            break;
-        }
+        result = SDP_RESULT_BAD_PARAM;
     }
 
-    /* No ':' in this attribute. */
-    if( i == valueLength )
+    if( result == SDP_RESULT_OK )
     {
-        pAttribute->pAttributeName = &( pValue[ 0 ] );
-        pAttribute->attributeNameLength = valueLength;
+        for( i = 0; i < valueLength; i++ )
+        {
+            if( pValue[ i ] == ':' )
+            {
+                pAttribute->pAttributeName = &( pValue[ 0 ] );
+                pAttribute->attributeNameLength = i;
 
-        pAttribute->pAttributeValue = NULL;
-        pAttribute->attributeValueLength = 0;
+                pAttribute->pAttributeValue = &( pValue[ i + 1 ] );
+                pAttribute->attributeValueLength = valueLength - ( i + 1 );
+                break;
+            }
+        }
+
+        /* No ':' in this attribute. */
+        if( i == valueLength )
+        {
+            pAttribute->pAttributeName = &( pValue[ 0 ] );
+            pAttribute->attributeNameLength = valueLength;
+
+            pAttribute->pAttributeValue = NULL;
+            pAttribute->attributeValueLength = 0;
+        }
     }
 
     return result;
@@ -380,53 +451,69 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
     size_t i, j, start = 0, numSpaces = 0;
     int sscanfRetVal;
 
-    for( i = 0; i < valueLength; i++ )
+    /* Input check. */
+    if( ( pValue == NULL ) ||
+        ( pMedia == NULL ) )
     {
-        if( pValue[ i ] == ' ' )
+        result = SDP_RESULT_BAD_PARAM;
+    }
+
+    if( result == SDP_RESULT_OK )
+    {
+        for( i = 0; i < valueLength; i++ )
         {
-            numSpaces += 1;
-
-            if( numSpaces == 1 )
+            if( pValue[ i ] == ' ' )
             {
-                pMedia->pMedia = &( pValue[ start ] );
-                pMedia->mediaLength = i - start;
-            }
-            else if( numSpaces == 2 )
-            {
-                sscanfRetVal = sscanf( &( pValue[ start ] ), "%" SDP_PRINT_FMT_UINT16, &( pMedia->port ) );
+                numSpaces += 1;
 
-                if( sscanfRetVal != 1 )
+                if( numSpaces == 1 )
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORT;
+                    pMedia->pMedia = &( pValue[ start ] );
+                    pMedia->mediaLength = i - start;
+                }
+                else if( numSpaces == 2 )
+                {
+                    sscanfRetVal = sscanf( &( pValue[ start ] ),
+                                           "%" SDP_PRINT_FMT_UINT16,
+                                           &( pMedia->port ) );
+
+                    if( sscanfRetVal != 1 )
+                    {
+                        result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORT;
+                        break;
+                    }
+
+                    pMedia->portNum = 0;
+
+                    for( j = start ; j < i ; j++ )
+                    {
+                        if( pValue[ j ] == '/' )
+                        {
+                            sscanfRetVal = sscanf( &( pValue[ j + 1 ] ),
+                                                   "%" SDP_PRINT_FMT_UINT16,
+                                                   &( pMedia->portNum ) );
+
+                            if( sscanfRetVal != 1 )
+                            {
+                                result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM;
+                            }
+
+                            break;
+                        }
+                    }
+                }
+                else /* numSpaces == 3 */
+                {
+                    pMedia->pProtocol = &( pValue[ start ] );
+                    pMedia->protocolLength = i - start;
+
+                    /* Skip last ' ' in protocol. */
+                    start = i + 1;
                     break;
                 }
 
-                pMedia->portNum = 0;
-                for( j=start ; j<i ; j++ )
-                {
-                    if( pValue[ j ] == '/' )
-                    {
-                        sscanfRetVal = sscanf( &( pValue[ j+1 ] ), "%" SDP_PRINT_FMT_UINT16, &( pMedia->portNum ) );
-
-                        if( sscanfRetVal != 1 )
-                        {
-                            result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM;
-                        }
-                        break;
-                    }
-                }
-            }
-            else /* numSpaces == 3 */
-            {
-                pMedia->pProtocol = &( pValue[ start ] );
-                pMedia->protocolLength = i - start;
-
-                /* Skip last ' ' in protocol. */
                 start = i + 1;
-                break;
             }
-
-            start = i + 1;
         }
     }
 
@@ -439,7 +526,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
         }
         else
         {
-            result = SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO;
+            result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
         }
     }
 

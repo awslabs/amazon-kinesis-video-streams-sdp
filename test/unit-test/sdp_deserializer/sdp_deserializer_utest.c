@@ -12,17 +12,17 @@
 #define SDP_TEST_BUFFER_SIZE ( 10000 )
 
 SdpDeserializerContext_t deserializerContext;
-char deserializerBuffer[SDP_TEST_BUFFER_SIZE];
+char deserializerBuffer[ SDP_TEST_BUFFER_SIZE ];
 size_t deserializerBufferLength = SDP_TEST_BUFFER_SIZE;
 
-void setUp(void)
+void setUp( void )
 {
-    memset( &deserializerContext, 0, sizeof( deserializerContext ) );
-    memset( &deserializerBuffer[0], 0, sizeof( deserializerBuffer ) );
+    memset( &( deserializerContext ), 0, sizeof( deserializerContext ) );
+    memset( &( deserializerBuffer[ 0 ] ), 0, sizeof( deserializerBuffer ) );
     deserializerBufferLength = SDP_TEST_BUFFER_SIZE;
 }
 
-void tearDown(void)
+void tearDown( void )
 {
     // clean stuff up here
 }
@@ -49,8 +49,12 @@ void test_SdpDeserializer_Init_NullMsg( void )
 {
     SdpResult_t result;
 
-    result = SdpDeserializer_Init( &deserializerContext, NULL, SDP_TEST_BUFFER_SIZE );
+    result = SdpDeserializer_Init( &( deserializerContext ), NULL, SDP_TEST_BUFFER_SIZE );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( deserializerContext ),
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 
 /*-----------------------------------------------------------*/
@@ -62,8 +66,15 @@ void test_SdpDeserializer_Init_ZeroBufferLength( void )
 {
     SdpResult_t result;
 
-    result = SdpDeserializer_Init( &deserializerContext, deserializerBuffer, 0 );
+    result = SdpDeserializer_Init( &( deserializerContext ), deserializerBuffer, 0 );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( deserializerContext ),
+                                 sizeof( SdpDeserializerContext_t ) );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 deserializerBuffer,
+                                 deserializerBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -75,11 +86,12 @@ void test_SdpDeserializer_Init_Pass( void )
 {
     SdpResult_t result;
 
-    result = SdpDeserializer_Init( &deserializerContext, deserializerBuffer, SDP_TEST_BUFFER_SIZE );
+    result = SdpDeserializer_Init( &( deserializerContext ), deserializerBuffer, SDP_TEST_BUFFER_SIZE );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( deserializerBuffer, deserializerContext.pStart);
-    TEST_ASSERT_EQUAL( SDP_TEST_BUFFER_SIZE, deserializerContext.totalLength);
-    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex);
+    TEST_ASSERT_EQUAL( deserializerBuffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( SDP_TEST_BUFFER_SIZE, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -95,7 +107,7 @@ void test_SdpDeserializer_GetNext_Ctx_NULL( void )
     uint8_t type;
 
     result = SdpDeserializer_GetNext( NULL, &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
@@ -110,9 +122,12 @@ void test_SdpDeserializer_GetNext_Type_NULL( void )
     const char * pValue;
     size_t valueLength;
 
-    result = SdpDeserializer_GetNext( &deserializerContext, NULL, &( pValue ), &( valueLength ) );
-    
+    result = SdpDeserializer_GetNext( &( deserializerContext ), NULL, &( pValue ), &( valueLength ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( deserializerContext ),
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 
 /*-----------------------------------------------------------*/
@@ -126,9 +141,12 @@ void test_SdpDeserializer_GetNext_Value_NULL( void )
     size_t valueLength;
     uint8_t type;
 
-    result = SdpDeserializer_GetNext( &deserializerContext, &( type ), NULL, &( valueLength ) );
-    
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), NULL, &( valueLength ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( deserializerContext ),
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 
 /*-----------------------------------------------------------*/
@@ -142,9 +160,12 @@ void test_SdpDeserializer_GetNext_Len_NULL( void )
     const char * pValue;
     uint8_t type;
 
-    result = SdpDeserializer_GetNext( &deserializerContext, &( type ), &( pValue ), NULL );
-    
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), NULL );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+    TEST_ASSERT_EACH_EQUAL_HEX8( 0x00,
+                                 &( deserializerContext ),
+                                 sizeof( SdpDeserializerContext_t ) );
 }
 
 /*-----------------------------------------------------------*/
@@ -161,13 +182,17 @@ void test_SdpDeserializer_GetNext_Incorrect_Line_Len( void )
 
     /* Initialize serializer context. */
     deserializerContext.totalLength = deserializerBufferLength;
+
     /* Each line should have atleast 3 char
-     * Make last line to be of incorrect length */
+     * Make last line to be of incorrect length. */
     deserializerContext.currentIndex = deserializerBufferLength - 2;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL( NULL, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( deserializerBufferLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( deserializerBufferLength - 2, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -188,10 +213,13 @@ void test_SdpDeserializer_GetNext_Incorrect_Message( void )
     /* Initialize serializer context. */
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_EQUAL_NOT_FOUND, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -213,16 +241,19 @@ void test_SdpDeserializer_GetNext_Incorrect_End( void )
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
     deserializerContext.currentIndex = 0;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NEWLINE_NOT_FOUND, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief The current index has reached the end of the message'.
+ * @brief The current index has reached the end of the message.
  */
 void test_SdpDeserializer_GetNext_End( void )
 {
@@ -237,10 +268,13 @@ void test_SdpDeserializer_GetNext_End( void )
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
     deserializerContext.currentIndex = inputLength;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_END, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -261,10 +295,13 @@ void test_SdpDeserializer_GetNext_Empty_Message( void )
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
     deserializerContext.currentIndex = 0;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_VALUE, result );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -285,13 +322,16 @@ void test_SdpDeserializer_GetNext_Pass_n( void )
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
     deserializerContext.currentIndex = 0;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -312,13 +352,16 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     deserializerContext.pStart = buffer;
     deserializerContext.totalLength = inputLength;
     deserializerContext.currentIndex = 0;
- 
+
     result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
@@ -333,12 +376,12 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId( void )
     char originatorBuffer[] ="larry ";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 5, originator.userNameLength);
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 5, originator.userNameLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -352,9 +395,9 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId2( void )
     char originatorBuffer[] ="larry  ";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_ID, result );
 }
 
@@ -370,13 +413,13 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion( void )
     char originatorBuffer[] ="larry 2890844526 ";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 5, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 5, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
 }
 
 /*-----------------------------------------------------------*/
@@ -391,13 +434,13 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion2( void )
     char originatorBuffer[] ="larry 2890844526  ";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_VERSION, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 5, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
+    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 5, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
 }
 
 /*-----------------------------------------------------------*/
@@ -412,14 +455,14 @@ void test_SdpDeserializer_ParseOriginator_NoConnectionInfo( void )
     char originatorBuffer[] ="larry 2890844526 2890842807 ";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 5, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
-    TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion);
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 5, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
+    TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion );
 }
 
 /*-----------------------------------------------------------*/
@@ -435,17 +478,17 @@ void test_SdpDeserializer_ParseOriginator_Pass( void )
     char originatorBuffer[] ="larry 2890844526 2890842807 IN IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpOriginator_t originator;
- 
+
     result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, &( originator ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 5, originator.userNameLength);
-    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId);
-    TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion);
-    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, originator.connectionInfo.networkType);
-    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, originator.connectionInfo.addressType);
-    TEST_ASSERT_EQUAL( strlen( addv4 ), originator.connectionInfo.addressLength);
+    TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 5, originator.userNameLength );
+    TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
+    TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion );
+    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, originator.connectionInfo.networkType );
+    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, originator.connectionInfo.addressType );
+    TEST_ASSERT_EQUAL( strlen( addv4 ), originator.connectionInfo.addressLength );
     TEST_ASSERT_EQUAL_STRING_LEN( addv4,originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
 }
 
@@ -460,9 +503,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkTypeLength( void )
     char originatorBuffer[] ="INe IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
 
@@ -477,9 +520,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkType( void )
     char originatorBuffer[] ="IX IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
 
@@ -494,9 +537,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressType( void )
     char originatorBuffer[] ="IN IPx 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
 
@@ -511,9 +554,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressTypeLength( void )
     char originatorBuffer[] ="IN IP4x 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
 
@@ -528,10 +571,10 @@ void test_SdpDeserializer_ParseConnectionInfo_NoAddress( void )
     char originatorBuffer[] ="IN IP4";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
 /*-----------------------------------------------------------*/
@@ -545,9 +588,9 @@ void test_SdpDeserializer_ParseConnectionInfo_RedundantInfo( void )
     char originatorBuffer[] ="IN IP4 192.168.1.1 192.168.2.2";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO, result );
 }
 
@@ -563,13 +606,13 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv4( void )
     char originatorBuffer[] ="IN IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType);
-    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, ConnInfo.addressType);
-    TEST_ASSERT_EQUAL( strlen( addv4 ), ConnInfo.addressLength);
+    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType );
+    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, ConnInfo.addressType );
+    TEST_ASSERT_EQUAL( strlen( addv4 ), ConnInfo.addressLength );
     TEST_ASSERT_EQUAL_STRING_LEN( addv4, ConnInfo.pAddress, ConnInfo.addressLength );
 }
 
@@ -585,14 +628,14 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv6( void )
     char originatorBuffer[] ="IN IP6 2201:056D::112E:144A:1E24";
     size_t inputLength = strlen( originatorBuffer );
     SdpConnectionInfo_t ConnInfo;
- 
+
     result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType);
-    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV6, ConnInfo.addressType);
-    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength);
-    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength);
+    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType );
+    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV6, ConnInfo.addressType );
+    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength );
+    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength );
     TEST_ASSERT_EQUAL_STRING_LEN( addv6, ConnInfo.pAddress, ConnInfo.addressLength );
 }
 
@@ -607,9 +650,8 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoBandwidthValue( void )
     char originatorBuffer[] ="X-YZ:";
     size_t inputLength = strlen( originatorBuffer );
     SdpBandwidthInfo_t bandwidth;
- 
+
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
-    
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH, result );
 }
 
@@ -624,10 +666,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoColon( void )
     char originatorBuffer[] ="X-YZ";
     size_t inputLength = strlen( originatorBuffer );
     SdpBandwidthInfo_t bandwidth;
- 
+
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
-    
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
 /*-----------------------------------------------------------*/
@@ -642,11 +683,11 @@ void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
     char originatorBuffer[] ="X-YZ:128";
     size_t inputLength = strlen( originatorBuffer );
     SdpBandwidthInfo_t bandwidth;
- 
+
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
-    
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( strlen(BwType), bandwidth.bwTypeLength );
+    TEST_ASSERT_EQUAL( strlen( BwType ), bandwidth.bwTypeLength );
     TEST_ASSERT_EQUAL( 128, bandwidth.sdpBandwidthValue );
     TEST_ASSERT_EQUAL_STRING_LEN( BwType, bandwidth.pBwType, bandwidth.bwTypeLength );
 }
@@ -662,7 +703,7 @@ void test_SdpDeserializer_ParseTimeActive_WithoutTime( void )
     char originatorBuffer[] =" ";
     size_t inputLength = strlen( originatorBuffer );
     SdpTimeDescription_t timeDescription;
- 
+
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_START_TIME, result );
@@ -679,7 +720,7 @@ void test_SdpDeserializer_ParseTimeActive_NoStopTime( void )
     char originatorBuffer[] ="0 ";
     size_t inputLength = strlen( originatorBuffer );
     SdpTimeDescription_t timeDescription;
- 
+
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME, result );
@@ -696,10 +737,9 @@ void test_SdpDeserializer_ParseTimeActive_NoSpace( void )
     char originatorBuffer[] ="0";
     size_t inputLength = strlen( originatorBuffer );
     SdpTimeDescription_t timeDescription;
- 
-    result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
+    result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
 /*-----------------------------------------------------------*/
@@ -713,7 +753,7 @@ void test_SdpDeserializer_ParseTimeActive_Pass( void )
     char originatorBuffer[] ="0 0";
     size_t inputLength = strlen( originatorBuffer );
     SdpTimeDescription_t timeDescription;
- 
+
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
@@ -730,16 +770,17 @@ void test_SdpDeserializer_ParseAttribute_Pass( void )
 {
     SdpResult_t result;
     char attributeString[] = "rtpmap:126 telephone-event/8000";
-    size_t attributeStringLength = strlen(attributeString);
+    size_t attributeStringLength = strlen( attributeString );
     char expectAttributeName[] = "rtpmap";
-    size_t expectAttributeNameLength = strlen(expectAttributeName);
+    size_t expectAttributeNameLength = strlen( expectAttributeName );
     char expectAttributeValue[] = "126 telephone-event/8000";
-    size_t expectAttributeValueLength = strlen(expectAttributeValue);
+    size_t expectAttributeValueLength = strlen( expectAttributeValue );
     SdpAttribute_t attribute;
 
-    memset( &attribute, 0, sizeof( SdpAttribute_t ) );
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
 
-    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &attribute );
+    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &( attribute ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL_size_t( expectAttributeNameLength, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_size_t( expectAttributeValueLength, attribute.attributeValueLength );
@@ -756,14 +797,15 @@ void test_SdpDeserializer_ParseAttribute_PassNoAttributeValue( void )
 {
     SdpResult_t result;
     char attributeString[] = "recvonly";
-    size_t attributeStringLength = strlen(attributeString);
+    size_t attributeStringLength = strlen( attributeString );
     char expectAttributeName[] = "recvonly";
-    size_t expectAttributeNameLength = strlen(expectAttributeName);
+    size_t expectAttributeNameLength = strlen( expectAttributeName );
     SdpAttribute_t attribute;
 
-    memset( &attribute, 0, sizeof( SdpAttribute_t ) );
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
 
-    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &attribute );
+    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &( attribute ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL_size_t( expectAttributeNameLength, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_size_t( 0, attribute.attributeValueLength );
@@ -780,21 +822,22 @@ void test_SdpDeserializer_ParseMedia_Pass( void )
 {
     SdpResult_t result;
     char mediaString[] = "video 9/2 UDP/TLS/RTP/SAVPF 96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t mediaStringLength = strlen(mediaString);
+    size_t mediaStringLength = strlen( mediaString );
     char expectMediaName[] = "video";
-    size_t expectMediaNameLength = strlen(expectMediaName);
+    size_t expectMediaNameLength = strlen( expectMediaName );
     uint16_t expectPort = 9;
     uint16_t expectPortNum = 2;
     char expectProtocol[] = "UDP/TLS/RTP/SAVPF";
-    size_t expectProtocolLength = strlen(expectProtocol);
+    size_t expectProtocolLength = strlen( expectProtocol );
     char expectFmt[] = "96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t expectFmtLength = strlen(expectFmt);
-    
+    size_t expectFmtLength = strlen( expectFmt );
+
     SdpMedia_t media;
 
-    memset( &media, 0, sizeof( SdpMedia_t ) );
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
 
-    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &( media ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL_size_t( expectMediaNameLength, media.mediaLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectMediaName, media.pMedia, media.mediaLength );
@@ -815,21 +858,22 @@ void test_SdpDeserializer_ParseMedia_PassNoPortNum( void )
 {
     SdpResult_t result;
     char mediaString[] = "video 9 UDP/TLS/RTP/SAVPF 96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t mediaStringLength = strlen(mediaString);
+    size_t mediaStringLength = strlen( mediaString );
     char expectMediaName[] = "video";
-    size_t expectMediaNameLength = strlen(expectMediaName);
+    size_t expectMediaNameLength = strlen( expectMediaName );
     uint16_t expectPort = 9;
     uint16_t expectPortNum = 0;
     char expectProtocol[] = "UDP/TLS/RTP/SAVPF";
-    size_t expectProtocolLength = strlen(expectProtocol);
+    size_t expectProtocolLength = strlen( expectProtocol );
     char expectFmt[] = "96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t expectFmtLength = strlen(expectFmt);
-    
+    size_t expectFmtLength = strlen( expectFmt );
+
     SdpMedia_t media;
 
-    memset( &media, 0, sizeof( SdpMedia_t ) );
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
 
-    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &( media ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL_size_t( expectMediaNameLength, media.mediaLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectMediaName, media.pMedia, media.mediaLength );
@@ -850,12 +894,13 @@ void test_SdpDeserializer_ParseMedia_InvalidPort( void )
 {
     SdpResult_t result;
     char mediaString[] = "video abc UDP/TLS/RTP/SAVPF 96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t mediaStringLength = strlen(mediaString);
+    size_t mediaStringLength = strlen( mediaString );
     SdpMedia_t media;
 
-    memset( &media, 0, sizeof( SdpMedia_t ) );
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
 
-    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &( media ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORT, result );
 }
 
@@ -868,12 +913,13 @@ void test_SdpDeserializer_ParseMedia_InvalidPortNum( void )
 {
     SdpResult_t result;
     char mediaString[] = "video 9/abc UDP/TLS/RTP/SAVPF 96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
-    size_t mediaStringLength = strlen(mediaString);
+    size_t mediaStringLength = strlen( mediaString );
     SdpMedia_t media;
 
-    memset( &media, 0, sizeof( SdpMedia_t ) );
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
 
-    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &( media ) );
+
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM, result );
 }
 
@@ -886,13 +932,14 @@ void test_SdpDeserializer_ParseMedia_InvalidMediaString( void )
 {
     SdpResult_t result;
     char mediaString[] = "video 9/2 UDP/TLS/RTP/SAVPF";
-    size_t mediaStringLength = strlen(mediaString);
+    size_t mediaStringLength = strlen( mediaString );
     SdpMedia_t media;
 
-    memset( &media, 0, sizeof( SdpMedia_t ) );
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
 
-    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &media );
-    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_ENOUGH_INFO, result );
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, &( media ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
 /*-----------------------------------------------------------*/
