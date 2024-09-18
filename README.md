@@ -61,21 +61,8 @@ a=rtpmap:99 h263-1998/90000
       (that we use).
 - For running the coverage target, gcov and lcov are additionally required.
 
-### Checkout CMock Submodule
-By default, the submodules in this repository are configured with `update=none`
-in [.gitmodules](./.gitmodules) to avoid increasing clone time and disk space
-usage of other repositories.
-
-To build unit tests, the submodule dependency of CMock is required. Use the
-following command to clone the submodule:
-
-```
-git submodule update --checkout --init --recursive test/CMock
-```
-
 ### Steps to build Unit Tests
-1. Go to the root directory of this repository. (Make sure that the CMock
-   submodule is cloned as described in [Checkout CMock Submodule](#checkout-cmock-submodule)).
+1. Go to the root directory of this repository.
 1. Run the following command to generate Makefiles:
 
     ```
@@ -96,32 +83,27 @@ git submodule update --checkout --init --recursive test/CMock
     ```
 
 ### Steps to generate code coverage report of Unit Test
-1. Run Unit Tests in [Steps to build Unit Tests](#steps-to-build-unit-tests).
-1. Generate coverage.info in build folder:
+1. Go to the root directory of this repository.
+1. Run the following command to generate Makefiles:
 
     ```
-    make coverage
+    cmake -S test/unit-test -B build/ -G "Unix Makefiles" \
+     -DCMAKE_BUILD_TYPE=Debug \
+     -DBUILD_CLONE_SUBMODULES=ON \
+     -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG'
     ```
-1. Get code coverage by lcov:
+1. Generate coverage report in `build/coverage` folder:
 
     ```
-    lcov --rc lcov_branch_coverage=1 -r coverage.info -o coverage.info '*test*' '*CMakeCCompilerId*' '*mocks*'
-    ```
-1. Generage HTML report in folder `CodecovHTMLReport`:
-
-    ```
-    genhtml --rc lcov_branch_coverage=1 --ignore-errors source coverage.info --legend --output-directory=CodecovHTMLReport
+    cd build && make coverage
     ```
 
 ### Script to run Unit Test and generate code coverage report
 
 ```sh
-git submodule update --init --recursive --checkout test/CMock
 cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -DLIBRARY_LOG_LEVEL=LOG_DEBUG'
 make -C build all
 cd build
 ctest -E system --output-on-failure
 make coverage
-lcov --rc lcov_branch_coverage=1 -r coverage.info -o coverage.info '*test*' '*CMakeCCompilerId*' '*mocks*'
-genhtml --rc lcov_branch_coverage=1 --ignore-errors source coverage.info --legend --output-directory=CodecovHTMLReport
 ```
