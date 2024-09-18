@@ -54,18 +54,17 @@ a=rtpmap:99 h263-1998/90000
 ## Building Unit Tests
 
 ### Platform Prerequisites
-- For running unit tests
-    - C99 compiler like gcc
-    - CMake 3.13.0 or later
-    - Ruby 2.0.0 or later is additionally required for the CMock test framework
-      (that we use).
-- For running the coverage target, gcov and lcov are additionally required.
+- For running unit tests:
+    - C99 compiler like gcc.
+    - CMake 3.13.0 or later.
+    - Ruby 2.0.0 or later (It is required for the CMock test framework that we use).
+- For running the coverage target, gcov and lcov are required.
 
 ### Steps to build Unit Tests
 1. Go to the root directory of this repository.
 1. Run the following command to generate Makefiles:
 
-    ```
+    ```sh
     cmake -S test/unit-test -B build/ -G "Unix Makefiles" \
      -DCMAKE_BUILD_TYPE=Debug \
      -DBUILD_CLONE_SUBMODULES=ON \
@@ -73,12 +72,12 @@ a=rtpmap:99 h263-1998/90000
     ```
 1. Run the following command to build the library and unit tests:
 
-    ```
+    ```sh
     make -C build all
     ```
 1. Run the following command to execute all tests and view results:
 
-    ```
+    ```sh
     cd build && ctest -E system --output-on-failure
     ```
 
@@ -86,7 +85,7 @@ a=rtpmap:99 h263-1998/90000
 1. Go to the root directory of this repository.
 1. Run the following command to generate Makefiles:
 
-    ```
+    ```sh
     cmake -S test/unit-test -B build/ -G "Unix Makefiles" \
      -DCMAKE_BUILD_TYPE=Debug \
      -DBUILD_CLONE_SUBMODULES=ON \
@@ -94,7 +93,7 @@ a=rtpmap:99 h263-1998/90000
     ```
 1. Generate coverage report in `build/coverage` folder:
 
-    ```
+    ```sh
     cd build && make coverage
     ```
 

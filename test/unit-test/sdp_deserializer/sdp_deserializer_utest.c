@@ -1,10 +1,10 @@
-/* Include Unity header */
+/* Unity includes. */
 #include "unity.h"
+#include "catch_assert.h"
 
-/* Include standard libraries */
+/* Standard includes. */
 #include <string.h>
 #include <stdint.h>
-#include "catch_assert.h"
 
 #include "sdp_deserializer.h"
 /* ===========================  EXTERN VARIABLES  =========================== */
@@ -37,9 +37,9 @@ void test_SdpDeserializer_Init_NullCtx( void )
     SdpResult_t result;
 
     result = SdpDeserializer_Init( NULL, deserializerBuffer, SDP_TEST_BUFFER_SIZE );
-
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -56,6 +56,7 @@ void test_SdpDeserializer_Init_NullMsg( void )
                                  &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -75,6 +76,7 @@ void test_SdpDeserializer_Init_ZeroBufferLength( void )
                                  deserializerBuffer,
                                  deserializerBufferLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -92,7 +94,7 @@ void test_SdpDeserializer_Init_Pass( void )
     TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief SdpDeserializerContext is NULL.
@@ -108,6 +110,7 @@ void test_SdpDeserializer_GetNext_Ctx_NULL( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -126,6 +129,7 @@ void test_SdpDeserializer_GetNext_Type_NULL( void )
                                  &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -144,6 +148,7 @@ void test_SdpDeserializer_GetNext_Value_NULL( void )
                                  &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -162,6 +167,7 @@ void test_SdpDeserializer_GetNext_Len_NULL( void )
                                  &( deserializerContext ),
                                  sizeof( SdpDeserializerContext_t ) );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -188,6 +194,7 @@ void test_SdpDeserializer_GetNext_Incorrect_Line_Len( void )
     TEST_ASSERT_EQUAL( deserializerBufferLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( deserializerBufferLength - 2, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -214,6 +221,7 @@ void test_SdpDeserializer_GetNext_Incorrect_Message( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -241,6 +249,7 @@ void test_SdpDeserializer_GetNext_Incorrect_End( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -267,6 +276,7 @@ void test_SdpDeserializer_GetNext_End( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -293,6 +303,7 @@ void test_SdpDeserializer_GetNext_Empty_Message( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -322,6 +333,7 @@ void test_SdpDeserializer_GetNext_Pass_n( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -352,7 +364,7 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed message without SessionId.
@@ -371,6 +383,7 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId( void )
     TEST_ASSERT_EQUAL_STRING_LEN( name, originator.pUserName, originator.userNameLength );
     TEST_ASSERT_EQUAL( 5, originator.userNameLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -387,6 +400,7 @@ void test_SdpDeserializer_ParseOriginator_NoSessionId2( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NO_SESSION_ID, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -407,6 +421,7 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion( void )
     TEST_ASSERT_EQUAL( 5, originator.userNameLength );
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -427,6 +442,7 @@ void test_SdpDeserializer_ParseOriginator_NoSessionVersion2( void )
     TEST_ASSERT_EQUAL( 5, originator.userNameLength );
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -448,6 +464,7 @@ void test_SdpDeserializer_ParseOriginator_NoConnectionInfo( void )
     TEST_ASSERT_EQUAL( 2890844526, originator.sessionId );
     TEST_ASSERT_EQUAL( 2890842807, originator.sessionVersion );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -475,7 +492,7 @@ void test_SdpDeserializer_ParseOriginator_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( addv4,originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with incorrect networkType length.
@@ -491,6 +508,7 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkTypeLength( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -507,6 +525,7 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkType( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -523,6 +542,7 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressType( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -539,6 +559,7 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressTypeLength( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -555,6 +576,7 @@ void test_SdpDeserializer_ParseConnectionInfo_NoAddress( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -571,6 +593,7 @@ void test_SdpDeserializer_ParseConnectionInfo_RedundantInfo( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -592,6 +615,7 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv4( void )
     TEST_ASSERT_EQUAL( strlen( addv4 ), ConnInfo.addressLength );
     TEST_ASSERT_EQUAL_STRING_LEN( addv4, ConnInfo.pAddress, ConnInfo.addressLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -615,7 +639,7 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv6( void )
     TEST_ASSERT_EQUAL_STRING_LEN( addv6, ConnInfo.pAddress, ConnInfo.addressLength );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed with no sdpBandwidthValue.
@@ -628,9 +652,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoBandwidthValue( void )
     SdpBandwidthInfo_t bandwidth;
 
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
-
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -644,9 +668,9 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoColon( void )
     SdpBandwidthInfo_t bandwidth;
 
     result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
-
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -668,7 +692,7 @@ void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( BwType, bandwidth.pBwType, bandwidth.bwTypeLength );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/
 
 /**
  * @brief The message is malformed without time.
@@ -684,6 +708,7 @@ void test_SdpDeserializer_ParseTimeActive_WithoutTime( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_START_TIME, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -700,6 +725,7 @@ void test_SdpDeserializer_ParseTimeActive_NoStopTime( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -713,9 +739,9 @@ void test_SdpDeserializer_ParseTimeActive_NoSpace( void )
     SdpTimeDescription_t timeDescription;
 
     result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
-
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -734,6 +760,7 @@ void test_SdpDeserializer_ParseTimeActive_Pass( void )
     TEST_ASSERT_EQUAL( 0, timeDescription.startTime );
     TEST_ASSERT_EQUAL( 0, timeDescription.stopTime );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -760,6 +787,7 @@ void test_SdpDeserializer_ParseAttribute_Pass( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeValue, attribute.pAttributeValue, attribute.attributeValueLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -784,6 +812,7 @@ void test_SdpDeserializer_ParseAttribute_PassNoAttributeValue( void )
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( NULL, attribute.pAttributeValue, attribute.attributeValueLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -819,6 +848,7 @@ void test_SdpDeserializer_ParseMedia_Pass( void )
     TEST_ASSERT_EQUAL_size_t( expectFmtLength, media.fmtLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectFmt, media.pFmt, media.fmtLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -854,6 +884,7 @@ void test_SdpDeserializer_ParseMedia_PassNoPortNum( void )
     TEST_ASSERT_EQUAL_size_t( expectFmtLength, media.fmtLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectFmt, media.pFmt, media.fmtLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -872,6 +903,7 @@ void test_SdpDeserializer_ParseMedia_InvalidPort( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORT, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -890,6 +922,7 @@ void test_SdpDeserializer_ParseMedia_InvalidPortNum( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_PORTNUM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -909,4 +942,4 @@ void test_SdpDeserializer_ParseMedia_InvalidMediaString( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
-/* =========================================================================== */
+/*-----------------------------------------------------------*/

@@ -1,10 +1,10 @@
-/* Include Unity header */
+/* Unity includes. */
 #include "unity.h"
+#include "catch_assert.h"
 
-/* Include standard libraries */
+/* Standard includes. */
 #include <string.h>
 #include <stdint.h>
-#include "catch_assert.h"
 
 #include "sdp_serializer.h"
 /* ===========================  EXTERN VARIABLES  =========================== */
@@ -24,7 +24,6 @@ void setUp( void )
 
 void tearDown( void )
 {
-    // clean stuff up here
 }
 
 /* ==============================  Test Cases  ============================== */
@@ -45,6 +44,7 @@ void test_SdpSerializer_Init_Pass( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
     TEST_ASSERT_EQUAL( 1, serializerContext.totalLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -60,6 +60,7 @@ void test_SdpSerializer_Init_NullCtx( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -77,6 +78,7 @@ void test_SdpSerializer_Init_NullBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
     TEST_ASSERT_EQUAL( 1, serializerContext.totalLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -102,6 +104,7 @@ void test_SdpSerializer_AddBuffer_Pass( void )
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
     TEST_ASSERT_EQUAL_STRING( &( expectOutput ), &( serializerBuffer[ 0 ] ) );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -147,6 +150,7 @@ void test_SdpSerializer_AddBuffer_InvalidContext( void )
                                  &( serializerBuffer[ 0 ] ),
                                  serializerBufferLength );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -172,6 +176,7 @@ void test_SdpSerializer_AddBuffer_NullBuffer( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -198,6 +203,7 @@ void test_SdpSerializer_AddBuffer_ZeroBufferLength( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -225,6 +231,7 @@ void test_SdpSerializer_AddBuffer_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -248,6 +255,7 @@ void test_SdpSerializer_AddBuffer_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -274,6 +282,7 @@ void test_SdpSerializer_AddU32_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -290,6 +299,7 @@ void test_SdpSerializer_AddU32_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -318,6 +328,7 @@ void test_SdpSerializer_AddU32_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -343,6 +354,7 @@ void test_SdpSerializer_AddU32_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -365,6 +377,7 @@ void test_SdpSerializer_AddU32_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -391,6 +404,7 @@ void test_SdpSerializer_AddU64_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -407,6 +421,7 @@ void test_SdpSerializer_AddU64_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -435,6 +450,7 @@ void test_SdpSerializer_AddU64_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -460,6 +476,7 @@ void test_SdpSerializer_AddU64_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -482,6 +499,7 @@ void test_SdpSerializer_AddU64_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -524,6 +542,7 @@ void test_SdpSerializer_AddOriginator_PassIPv4( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -566,6 +585,7 @@ void test_SdpSerializer_AddOriginator_PassIPv6( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( strlen( expectOutput ), serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -596,6 +616,7 @@ void test_SdpSerializer_AddOriginator_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -638,6 +659,7 @@ void test_SdpSerializer_AddOriginator_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -661,6 +683,7 @@ void test_SdpSerializer_AddOriginator_NullOriginator( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -698,6 +721,7 @@ void test_SdpSerializer_AddOriginator_NullConnInfoAddr( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -739,6 +763,7 @@ void test_SdpSerializer_AddOriginator_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -775,6 +800,7 @@ void test_SdpSerializer_AddOriginator_OutputBufferNotEnough( void )
                                           &( originator ) );
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -813,6 +839,7 @@ void test_SdpSerializer_AddOriginator_InvalidNetworkType( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -851,6 +878,7 @@ void test_SdpSerializer_AddOriginator_InvalidAddressType( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -885,6 +913,7 @@ void test_SdpSerializer_AddConnectionInfo_PassIPv4( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -919,6 +948,7 @@ void test_SdpSerializer_AddConnectionInfo_PassIPv6( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -942,6 +972,7 @@ void test_SdpSerializer_AddConnectionInfo_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -977,6 +1008,7 @@ void test_SdpSerializer_AddConnectionInfo_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1000,6 +1032,7 @@ void test_SdpSerializer_AddConnectionInfo_NullConnInfo( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1030,6 +1063,7 @@ void test_SdpSerializer_AddConnectionInfo_NullAddress( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1061,6 +1095,7 @@ void test_SdpSerializer_AddConnectionInfo_InvalidNetworkType( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1092,6 +1127,7 @@ void test_SdpSerializer_AddConnectionInfo_InvalidAddressType( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1125,6 +1161,7 @@ void test_SdpSerializer_AddConnectionInfo_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1155,6 +1192,7 @@ void test_SdpSerializer_AddConnectionInfo_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1188,6 +1226,7 @@ void test_SdpSerializer_AddBandwidthInfo_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1210,6 +1249,7 @@ void test_SdpSerializer_AddBandwidthInfo_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1244,6 +1284,7 @@ void test_SdpSerializer_AddBandwidthInfo_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1266,6 +1307,7 @@ void test_SdpSerializer_AddBandwidthInfo_NullBandwidthInfo( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1295,6 +1337,7 @@ void test_SdpSerializer_AddBandwidthInfo_NullBandwidthType( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1327,6 +1370,7 @@ void test_SdpSerializer_AddBandwidthInfo_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1356,6 +1400,7 @@ void test_SdpSerializer_AddBandwidthInfo_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1389,6 +1434,7 @@ void test_SdpSerializer_AddTimeActive_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1411,6 +1457,7 @@ void test_SdpSerializer_AddTimeActive_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1445,6 +1492,7 @@ void test_SdpSerializer_AddTimeActive_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1467,6 +1515,7 @@ void test_SdpSerializer_AddTimeActive_NullTimeDescription( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1499,6 +1548,7 @@ void test_SdpSerializer_AddTimeActive_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1528,6 +1578,7 @@ void test_SdpSerializer_AddTimeActive_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1563,6 +1614,7 @@ void test_SdpSerializer_AddAttribute_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1597,6 +1649,7 @@ void test_SdpSerializer_AddAttribute_PassNoValue( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1620,6 +1673,7 @@ void test_SdpSerializer_AddAttribute_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1655,6 +1709,7 @@ void test_SdpSerializer_AddAttribute_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1678,6 +1733,7 @@ void test_SdpSerializer_AddAttribute_NullAttribute( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1708,6 +1764,7 @@ void test_SdpSerializer_AddAttribute_NullAttributeName( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1741,6 +1798,7 @@ void test_SdpSerializer_AddAttribute_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1771,6 +1829,7 @@ void test_SdpSerializer_AddAttribute_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1813,6 +1872,7 @@ void test_SdpSerializer_AddMedia_Pass( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1854,6 +1914,7 @@ void test_SdpSerializer_AddMedia_PassNoPortNum( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1885,6 +1946,7 @@ void test_SdpSerializer_AddMedia_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1928,6 +1990,7 @@ void test_SdpSerializer_AddMedia_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1951,6 +2014,7 @@ void test_SdpSerializer_AddMedia_NullMedia( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -1989,6 +2053,7 @@ void test_SdpSerializer_AddMedia_NullProtocol( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2027,6 +2092,7 @@ void test_SdpSerializer_AddMedia_NullFormat( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( 0, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2068,6 +2134,7 @@ void test_SdpSerializer_AddMedia_NullOutputBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( outputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2106,6 +2173,7 @@ void test_SdpSerializer_AddMedia_OutputBufferNotEnough( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OUT_OF_MEMORY, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2136,6 +2204,7 @@ void test_SdpSerializer_Finalize_Pass( void )
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2153,6 +2222,7 @@ void test_SdpSerializer_Finalize_NullContext( void )
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2180,6 +2250,7 @@ void test_SdpSerializer_Finalize_NullBuffer( void )
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2207,6 +2278,7 @@ void test_SdpSerializer_Finalize_NullLength( void )
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( expectOutputLength, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2235,6 +2307,7 @@ void test_SdpSerializer_Finalize_InvalidContext( void )
     TEST_ASSERT_EQUAL( serializerBufferLength, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -2263,4 +2336,5 @@ void test_SdpSerializer_Finalize_NullContextBuffer( void )
     TEST_ASSERT_EQUAL( 0, serializerContext.totalLength );
     TEST_ASSERT_EQUAL( serializerBufferLength + 1, serializerContext.currentIndex );
 }
+
 /*-----------------------------------------------------------*/
