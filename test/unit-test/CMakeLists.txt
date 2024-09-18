@@ -93,7 +93,8 @@ add_custom_target( coverage
     COMMAND ${CMAKE_COMMAND} -DCMOCK_DIR=${CMOCK_DIR}
     -P ${MODULE_ROOT_DIR}/test/unit-test/cmock/coverage.cmake
     DEPENDS cmock unity
-    sdp_serializer
+    sdp_serializer_utest
+    sdp_deserializer_utest
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 

@@ -126,18 +126,18 @@ function(create_mock_list mock_name
                                ${mocks_dir}
                                ${mock_include_list}
            )
-        if (APPLE)
-            set_target_properties(${mock_name} PROPERTIES
+    if (APPLE)
+        set_target_properties(${mock_name} PROPERTIES
                 LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib
                 POSITION_INDEPENDENT_CODE ON
                 LINK_FLAGS  "-Wl,-undefined,dynamic_lookup"
-        )   
-       else()
-            set_target_properties(${mock_name} PROPERTIES
+        )
+    else()
+        set_target_properties(${mock_name} PROPERTIES
                 LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib
                 POSITION_INDEPENDENT_CODE ON
-        )  
-       endif()
+        )
+    endif()
     target_compile_definitions(${mock_name} PUBLIC
             ${mock_define_list}
         )
