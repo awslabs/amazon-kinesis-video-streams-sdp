@@ -22,6 +22,7 @@
 #define SDP_TYPE_ENCRYPTION_KEY  'k'
 #define SDP_TYPE_ATTRIBUTE       'a'
 #define SDP_TYPE_MEDIA           'm'
+#define SDP_TYPE_MEDIA_TITLE     'i'
 
 /*-----------------------------------------------------------*/
 

@@ -7,16 +7,16 @@
 
 # SDP library source files.
 set( SDP_SOURCES
-     "source/sdp_deserializer.c"
-     "source/sdp_serializer.c" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/sdp_deserializer.c"
+     "${CMAKE_CURRENT_LIST_DIR}/source/sdp_serializer.c" )
 
 # SDP library public include directories.
 set( SDP_INCLUDE_PUBLIC_DIRS
-     "source/include" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/include" )
 
 # SDP library public include header files.
 set( SDP_INCLUDE_PUBLIC_FILES
-     "source/include/sdp_config_defaults.h"
-     "source/include/sdp_data_types.h"
-     "source/include/sdp_deserializer.h"
-     "source/include/sdp_serializer.h" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/sdp_config_defaults.h"
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/sdp_data_types.h"
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/sdp_deserializer.h"
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/sdp_serializer.h" )
