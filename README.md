@@ -87,7 +87,7 @@ a=rtpmap:99 h263-1998/90000
 
     ```sh
     cmake -S test/unit-test -B build/ -G "Unix Makefiles" \
-     -DCMAKE_BUILD_TYPE=Debug \
+     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DBUILD_CLONE_SUBMODULES=ON \
      -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG'
     ```
@@ -100,9 +100,6 @@ a=rtpmap:99 h263-1998/90000
 ### Script to run Unit Test and generate code coverage report
 
 ```sh
-cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -DLIBRARY_LOG_LEVEL=LOG_DEBUG'
-make -C build all
-cd build
-ctest -E system --output-on-failure
-make coverage
+cmake -S test/unit-test -B build/ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -DLIBRARY_LOG_LEVEL=LOG_DEBUG' 
+cd build  && make coverage
 ```
