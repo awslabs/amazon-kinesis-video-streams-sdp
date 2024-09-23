@@ -367,6 +367,27 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Validate SDP Deserializer Parse Originator fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseOriginator_BadParams( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="larry ";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpOriginator_t originator;
+
+    result = SdpDeserializer_ParseOriginator( NULL, 0, &( originator ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseOriginator( originatorBuffer, inputLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief The message is malformed message without SessionId.
  */
 void test_SdpDeserializer_ParseOriginator_NoSessionId( void )
@@ -490,6 +511,27 @@ void test_SdpDeserializer_ParseOriginator_Pass( void )
     TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, originator.connectionInfo.addressType );
     TEST_ASSERT_EQUAL( strlen( addv4 ), originator.connectionInfo.addressLength );
     TEST_ASSERT_EQUAL_STRING_LEN( addv4,originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate SDP Deserializer Parse Connection Info fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseConnectionInfo_BadParams( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="INe IP4 128.112.136.10";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpConnectionInfo_t connInfo;
+
+    result = SdpDeserializer_ParseConnectionInfo( NULL, 0, &( connInfo ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
 /*-----------------------------------------------------------*/
@@ -642,6 +684,27 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv6( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Validate SDP Deserializer Parse Bandwidth Info fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseBandwidthInfo_BadParams( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="X-YZ:";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpBandwidthInfo_t bandwidth;
+
+    result = SdpDeserializer_ParseBandwidthInfo( NULL, 0, &( bandwidth ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief The message is malformed with no sdpBandwidthValue.
  */
 void test_SdpDeserializer_ParseBandwidthInfo_NoBandwidthValue( void )
@@ -690,6 +753,27 @@ void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
     TEST_ASSERT_EQUAL( strlen( BwType ), bandwidth.bwTypeLength );
     TEST_ASSERT_EQUAL( 128, bandwidth.sdpBandwidthValue );
     TEST_ASSERT_EQUAL_STRING_LEN( BwType, bandwidth.pBwType, bandwidth.bwTypeLength );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate SDP Deserializer Parse Time Active fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseTimeActive_BadParams( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="0 0";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpTimeDescription_t timeDescription;
+
+    result = SdpDeserializer_ParseTimeActive( NULL, 0, &( timeDescription ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
 /*-----------------------------------------------------------*/
@@ -764,6 +848,29 @@ void test_SdpDeserializer_ParseTimeActive_Pass( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Validate SDP Deserializer Parse Attribute fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseAttribute_BadParams( void )
+{
+    SdpResult_t result;
+    char attributeString[] = "rtpmap:126 telephone-event/8000";
+    size_t attributeStringLength = strlen( attributeString );
+    SdpAttribute_t attribute;
+
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
+
+    result = SdpDeserializer_ParseAttribute( NULL, 0, &( attribute ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Inputs are valid.
  */
 void test_SdpDeserializer_ParseAttribute_Pass( void )
@@ -811,6 +918,29 @@ void test_SdpDeserializer_ParseAttribute_PassNoAttributeValue( void )
     TEST_ASSERT_EQUAL_size_t( 0, attribute.attributeValueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( NULL, attribute.pAttributeValue, attribute.attributeValueLength );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate SDP Deserializer Parse Media fail functionality for Bad Parameters.
+ */
+void test_SdpDeserializer_ParseMedia_BadParams( void )
+{
+    SdpResult_t result;
+    char mediaString[] = "video 9/2 UDP/TLS/RTP/SAVPF 96 97 102 103 104 105 106 107 108 109 127 125 39 40 45 46 98 99 100 101 112 113 116 117 118";
+    size_t mediaStringLength = strlen( mediaString );
+    SdpMedia_t media;
+
+    memset( &( media ), 0, sizeof( SdpMedia_t ) );
+
+    result = SdpDeserializer_ParseMedia( NULL, 0, &( media ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+
+    result = SdpDeserializer_ParseMedia( mediaString, mediaStringLength, NULL );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 }
 
 /*-----------------------------------------------------------*/
