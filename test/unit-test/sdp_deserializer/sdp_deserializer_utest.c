@@ -523,9 +523,9 @@ void test_SdpDeserializer_ParseConnectionInfo_BadParams( void )
     SdpResult_t result;
     char originatorBuffer[] ="INe IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( NULL, 0, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( NULL, 0, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
 

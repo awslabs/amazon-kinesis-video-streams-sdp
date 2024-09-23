@@ -62,9 +62,9 @@ SdpResult_t SdpSerializer_AddBuffer( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */                                    
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -112,9 +112,9 @@ SdpResult_t SdpSerializer_AddU32( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */  
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -162,9 +162,9 @@ SdpResult_t SdpSerializer_AddU64( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */   
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -228,9 +228,9 @@ SdpResult_t SdpSerializer_AddOriginator( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */   
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -285,9 +285,9 @@ SdpResult_t SdpSerializer_AddConnectionInfo( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */   
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -339,9 +339,9 @@ SdpResult_t SdpSerializer_AddBandwidthInfo( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */   
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -393,9 +393,9 @@ SdpResult_t SdpSerializer_AddTimeActive( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */ 
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -457,9 +457,9 @@ SdpResult_t SdpSerializer_AddAttribute( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */ 
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
@@ -537,9 +537,9 @@ SdpResult_t SdpSerializer_AddMedia( SdpSerializerContext_t * pCtx,
         /* LCOV_EXCL_START */
         if( snprintfRetVal < 0 )
         {
-            result = SDP_RESULT_SNPRINTF_ERROR; 
+            result = SDP_RESULT_SNPRINTF_ERROR;
         }
-        /* LCOV_EXCL_STOP  */  
+        /* LCOV_EXCL_STOP  */
         else if( ( pWriteBuffer != NULL ) && ( ( size_t ) snprintfRetVal >= remainingLength ) )
         {
             result = SDP_RESULT_OUT_OF_MEMORY;
