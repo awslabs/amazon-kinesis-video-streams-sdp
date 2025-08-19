@@ -38,6 +38,7 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 if( COV_ANALYSIS )
     find_program(COV_BUILD cov-build)
     find_program(COV_ANALYZE cov-analyze)
+    find_program(COV_CONFIG cov-configure)
     find_program(COV_FORMAT cov-format-errors)
 
     if( COV_BUILD AND COV_ANALYZE AND COV_FORMAT )
@@ -46,7 +47,7 @@ if( COV_ANALYSIS )
 
         # Target for Coverity analysis that builds the library.
         add_library( coverity_analysis
-                    ${SDP_SOURCES} )
+                     ${SDP_SOURCES} )
 
         # Build SDP library target without custom config dependency.
         target_compile_definitions( coverity_analysis PUBLIC SDP_DO_NOT_USE_CUSTOM_CONFIG )
@@ -57,54 +58,66 @@ if( COV_ANALYSIS )
         # Remove inclusion of assert.
         add_compile_definitions( NDEBUG=1 )
 
-        # # Directory for Coverity intermediate files
-        # set(COVERITY_DIR "${CMAKE_BINARY_DIR}/coverity_report")
+        # Directory for Coverity intermediate files
+        set(COVERITY_DIR "${CMAKE_BINARY_DIR}/coverity_report")
+        message( STATUS "COVERITY_DIR: ${COVERITY_DIR}" )
 
-        # # Clean Coverity directory
-        # add_custom_target( coverity_clean_dir
-        #     COMMAND ${CMAKE_COMMAND} -E remove_directory ${COVERITY_DIR}
-        #     COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERITY_DIR}
-        #     COMMENT "Cleaning Coverity directory..."
-        # )
+        set( COVERAGE_SOURCE_DIR "${CMAKE_BINARY_DIR}" )
+        message( STATUS "COVERAGE_SOURCE_DIR: ${COVERAGE_SOURCE_DIR}" )
+
+        # Clean Coverity directory
+        add_custom_target( coverity_clean_dir
+            COMMAND ${CMAKE_COMMAND} -E remove_directory ${COVERITY_DIR}
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERITY_DIR}
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERAGE_SOURCE_DIR}/covConfig
+            COMMENT "Cleaning Coverity directory..."
+        )
     
-        # # Clean build
-        # add_custom_target( coverity_clean
-        #     COMMAND ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} --target clean
-        #     WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
-        #     COMMENT "Running Coverity clean..."
-        #     DEPENDS coverity_clean_dir
-        # )
+        # Clean build
+        add_custom_target( coverity_clean
+            COMMAND ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} --target clean
+            WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
+            COMMENT "Running Coverity clean..."
+            DEPENDS coverity_clean_dir
+        )
     
-        # # Individual Coverity targets
-        # add_custom_target( coverity_build
-        #     COMMAND ${COV_BUILD} --dir ${COVERAGE_SOURCE_DIR} ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} -j ${PROCESSOR_COUNT}
-        #     WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
-        #     COMMENT "Running Coverity build..."
-        #     DEPENDS coverity_clean
-        # )
+        # Configure
+        add_custom_target( coverity_configure
+            COMMAND ${COV_CONFIG} --config covConfig/coverity.xml --compiler cc --comptype gcc --template
+            WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
+            COMMENT "Running Coverity configure..."
+            DEPENDS coverity_clean
+        )
     
-        # add_custom_target( coverity_analyze
-        #     COMMAND ${COV_ANALYZE}
-        #         --disable-parse-warnings
-        #         --dir ${COVERAGE_SOURCE_DIR}
-        #         --all
-        #         --aggressiveness-level high
-        #         --tu-pattern \"file\(\'./src/iotmi_.*|./components/.*/iotmi_.*c$$|./components/mqtt_adapter/.*\'\)\"
-        #     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        #     DEPENDS coverity_build
-        # )
+        # Individual Coverity targets
+        add_custom_target( coverity_build
+            COMMAND ${COV_BUILD} --config covConfig/coverity.xml --emit-complementary-info --dir ${COVERAGE_SOURCE_DIR} ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} -j ${PROCESSOR_COUNT}
+            WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
+            COMMENT "Running Coverity build..."
+            DEPENDS coverity_configure
+        )
     
-        # add_custom_target(coverity_report
-        #     COMMAND ${COV_FORMAT}
-        #         --dir ${COVERAGE_SOURCE_DIR}
-        #         --html-output ${COVERITY_DIR}
-        #     WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
-        #     COMMENT "Generating Coverity report..."
-        #     DEPENDS coverity_analyze
-        # )
+        add_custom_target( coverity_analyze
+            COMMAND ${COV_ANALYZE}
+                --dir ${COVERAGE_SOURCE_DIR}
+                --coding-standard-config ${MODULE_ROOT_DIR}/test/coverity/misra.config
+                --tu-pattern \"file\(\'.*/source/.*\'\)\"
+            WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
+            DEPENDS coverity_build
+        )
     
-        # # Meta-target that runs all Coverity steps
-        # add_custom_target(coverity_scan DEPENDS coverity_report)
+        add_custom_target(coverity_report
+            COMMAND ${COV_FORMAT}
+                --dir ${COVERAGE_SOURCE_DIR}
+                --html-output ${COVERITY_DIR}
+                --file "source"
+            WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
+            COMMENT "Generating Coverity report..."
+            DEPENDS coverity_analyze
+        )
+    
+        # Meta-target that runs all Coverity steps
+        add_custom_target(coverity_scan DEPENDS coverity_report)
     
         message( STATUS "Coverity targets configured successfully" )
     else()
