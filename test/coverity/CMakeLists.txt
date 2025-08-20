@@ -56,7 +56,7 @@ if( COV_ANALYSIS )
         target_include_directories( coverity_analysis PUBLIC ${SDP_INCLUDE_PUBLIC_DIRS} )
 
         # Remove inclusion of assert.
-        add_compile_definitions( NDEBUG=1 )
+        target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
 
         # Directory for Coverity intermediate files
         set(COVERITY_DIR "${CMAKE_BINARY_DIR}/coverity_report")
@@ -91,7 +91,7 @@ if( COV_ANALYSIS )
     
         # Individual Coverity targets
         add_custom_target( coverity_build
-            COMMAND ${COV_BUILD} --config covConfig/coverity.xml --emit-complementary-info --dir ${COVERAGE_SOURCE_DIR} ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} -j ${PROCESSOR_COUNT}
+            COMMAND ${COV_BUILD} --config covConfig/coverity.xml --emit-complementary-info --dir ${COVERAGE_SOURCE_DIR} ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} --target coverity_analysis -j ${PROCESSOR_COUNT}
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             COMMENT "Running Coverity build..."
             DEPENDS coverity_configure
