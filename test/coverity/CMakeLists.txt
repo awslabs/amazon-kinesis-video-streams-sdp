@@ -49,11 +49,10 @@ if( COV_ANALYSIS )
         add_library( coverity_analysis
                      ${SDP_SOURCES} )
 
-        # Build SDP library target without custom config dependency.
-        target_compile_definitions( coverity_analysis PUBLIC SDP_DO_NOT_USE_CUSTOM_CONFIG )
-
         # SDP public include path.
-        target_include_directories( coverity_analysis PUBLIC ${SDP_INCLUDE_PUBLIC_DIRS} )
+        target_include_directories( coverity_analysis PUBLIC
+                                    ${SDP_INCLUDE_PUBLIC_DIRS}
+                                    ${MODULE_ROOT_DIR}/test/coverity )
 
         # Remove inclusion of assert.
         target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
