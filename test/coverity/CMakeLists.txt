@@ -100,7 +100,6 @@ if( COV_ANALYSIS )
         add_custom_target( coverity_analyze
             COMMAND ${COV_ANALYZE}
                 --dir ${COVERAGE_SOURCE_DIR}
-                --coding-standard-config ${MODULE_ROOT_DIR}/test/coverity/misra.config
                 --tu-pattern \"file\(\'.*/source/.*\'\)\"
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             DEPENDS coverity_build

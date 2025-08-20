@@ -1,14 +1,11 @@
 # Static code analysis for SDP Library
-This directory is made for the purpose of statically testing the MISRA C:2012 compliance of SDP Library using
+This directory is made for the purpose of statically testing the SDP Library using
 [Black Duck Coverity](https://www.blackduck.com/static-analysis-tools-sast/coverity.html) static analysis tool.
-To that end, this directory provides a [configuration file](./misra.config) to use when
-building a binary for the tool to analyze.
+This configuration focuses on detecting code defects such as memory leaks, null pointer dereferences, 
+buffer overflows, and other code quality issues.
 
 > **Note**
 For generating the report as outlined below, we have used Coverity version 2025.6.0.
-
-For details regarding the suppressed violations in the report (which can be generated using the instructions described below), please
-see the [MISRA.md](../../MISRA.md) file.
 
 ## Getting Started
 ### Prerequisites
@@ -37,4 +34,3 @@ These commands will:
    - Report generation in both HTML and JSON formats
 
 You should now have the HTML formatted violations list in a directory named `build/coverity_report`.
-With the current configuration and the provided project, you should not see any deviations.
