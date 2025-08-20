@@ -57,45 +57,45 @@ if( COV_ANALYSIS )
         # Remove inclusion of assert.
         target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
 
-        # Directory for Coverity intermediate files
+        # Directory for Coverity intermediate files.
         set(COVERITY_DIR "${CMAKE_BINARY_DIR}/coverity_report")
         message( STATUS "COVERITY_DIR: ${COVERITY_DIR}" )
 
         set( COVERAGE_SOURCE_DIR "${CMAKE_BINARY_DIR}" )
         message( STATUS "COVERAGE_SOURCE_DIR: ${COVERAGE_SOURCE_DIR}" )
 
-        # Clean Coverity directory
+        # Clean Coverity directory.
         add_custom_target( coverity_clean_dir
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${COVERITY_DIR}
             COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERITY_DIR}
             COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERAGE_SOURCE_DIR}/covConfig
             COMMENT "Cleaning Coverity directory..."
         )
-    
-        # Clean build
+
+        # Clean build.
         add_custom_target( coverity_clean
             COMMAND ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} --target clean
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             COMMENT "Running Coverity clean..."
             DEPENDS coverity_clean_dir
         )
-    
-        # Configure
+
+        # Configure.
         add_custom_target( coverity_configure
             COMMAND ${COV_CONFIG} --config covConfig/coverity.xml --compiler cc --comptype gcc --template
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             COMMENT "Running Coverity configure..."
             DEPENDS coverity_clean
         )
-    
-        # Individual Coverity targets
+
+        # Individual Coverity targets.
         add_custom_target( coverity_build
             COMMAND ${COV_BUILD} --config covConfig/coverity.xml --emit-complementary-info --dir ${COVERAGE_SOURCE_DIR} ${CMAKE_COMMAND} --build ${COVERAGE_SOURCE_DIR} --target coverity_analysis -j ${PROCESSOR_COUNT}
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             COMMENT "Running Coverity build..."
             DEPENDS coverity_configure
         )
-    
+
         add_custom_target( coverity_analyze
             COMMAND ${COV_ANALYZE}
                 --dir ${COVERAGE_SOURCE_DIR}
@@ -103,7 +103,7 @@ if( COV_ANALYSIS )
             WORKING_DIRECTORY ${COVERAGE_SOURCE_DIR}
             DEPENDS coverity_build
         )
-    
+
         add_custom_target(coverity_report
             COMMAND ${COV_FORMAT}
                 --dir ${COVERAGE_SOURCE_DIR}
@@ -113,10 +113,10 @@ if( COV_ANALYSIS )
             COMMENT "Generating Coverity report..."
             DEPENDS coverity_analyze
         )
-    
-        # Meta-target that runs all Coverity steps
+
+        # Meta-target that runs all Coverity steps.
         add_custom_target(coverity_scan DEPENDS coverity_report)
-    
+
         message( STATUS "Coverity targets configured successfully" )
     else()
         message( WARNING "Coverity tools not found. Coverity targets will not be available." )
