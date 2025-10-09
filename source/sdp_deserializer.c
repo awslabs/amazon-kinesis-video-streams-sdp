@@ -401,11 +401,15 @@ SdpResult_t SdpDeserializer_ParseTimeActive( const char * pValue,
                     sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
                                            "%" SDP_PRINT_FMT_UINT64,
                                            &( pTimeDescription->stopTime ) );
+                    
+                    if( sscanfRetVal != 1 )
+                    {
+                        result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME;
+                    }
                 }
-
-                if( sscanfRetVal != 1 )
+                else
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_STOP_TIME;
+                    result = SDP_RESULT_MESSAGE_MALFORMED;
                 }
 
                 break;

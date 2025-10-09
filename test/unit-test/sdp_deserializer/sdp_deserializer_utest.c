@@ -796,12 +796,29 @@ void test_SdpDeserializer_ParseTimeActive_WithoutTime( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief The message is malformed without stopTime.
+ * @brief The message is malformed with bounds checking failure (no content after space).
  */
-void test_SdpDeserializer_ParseTimeActive_NoStopTime( void )
+void test_SdpDeserializer_ParseTimeActive_BoundsCheckFailure( void )
 {
     SdpResult_t result;
     char originatorBuffer[] ="0 ";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpTimeDescription_t timeDescription;
+
+    result = SdpDeserializer_ParseTimeActive( originatorBuffer, inputLength, &( timeDescription ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message is malformed with invalid stopTime content.
+ */
+void test_SdpDeserializer_ParseTimeActive_InvalidStopTime( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="0 abc";
     size_t inputLength = strlen( originatorBuffer );
     SdpTimeDescription_t timeDescription;
 
