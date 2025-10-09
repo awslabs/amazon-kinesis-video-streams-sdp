@@ -199,7 +199,7 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
 
     if( result == SDP_RESULT_OK )
     {
-        if( i < valueLength )
+        if( ( i < valueLength ) && ( start < valueLength ) )
         {
             /* Originator part is parsed, continue to parse connection info. */
             result = SdpDeserializer_ParseConnectionInfo( &( pValue[ start ] ),
@@ -553,7 +553,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
 
     if( result == SDP_RESULT_OK )
     {
-        if( i < valueLength )
+        if( ( i < valueLength ) && ( start < valueLength ) )
         {
             pMedia->pFmt = &( pValue[ start ] );
             pMedia->fmtLength = valueLength - start;
