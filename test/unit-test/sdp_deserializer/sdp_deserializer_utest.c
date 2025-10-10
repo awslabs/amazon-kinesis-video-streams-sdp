@@ -510,7 +510,7 @@ void test_SdpDeserializer_ParseOriginator_Pass( void )
     TEST_ASSERT_EQUAL( SDP_NETWORK_IN, originator.connectionInfo.networkType );
     TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, originator.connectionInfo.addressType );
     TEST_ASSERT_EQUAL( strlen( addv4 ), originator.connectionInfo.addressLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( addv4,originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( addv4, originator.connectionInfo.pAddress, originator.connectionInfo.addressLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -544,9 +544,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkTypeLength( void )
     SdpResult_t result;
     char originatorBuffer[] ="INe IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
@@ -561,9 +561,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectNetworkType( void )
     SdpResult_t result;
     char originatorBuffer[] ="IX IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_NETWORK_TYPE, result );
 }
@@ -578,9 +578,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressType( void )
     SdpResult_t result;
     char originatorBuffer[] ="IN IPx 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
@@ -595,9 +595,9 @@ void test_SdpDeserializer_ParseConnectionInfo_IncorrectAddressTypeLength( void )
     SdpResult_t result;
     char originatorBuffer[] ="IN IP4x 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_INVALID_ADDRESS_TYPE, result );
 }
@@ -612,9 +612,9 @@ void test_SdpDeserializer_ParseConnectionInfo_NoAddress( void )
     SdpResult_t result;
     char originatorBuffer[] ="IN IP4";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
@@ -629,9 +629,9 @@ void test_SdpDeserializer_ParseConnectionInfo_RedundantInfo( void )
     SdpResult_t result;
     char originatorBuffer[] ="IN IP4 192.168.1.1 192.168.2.2";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_REDUNDANT_INFO, result );
 }
@@ -647,15 +647,15 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv4( void )
     char addv4[] = "128.112.136.10";
     char originatorBuffer[] ="IN IP4 128.112.136.10";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType );
-    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, ConnInfo.addressType );
-    TEST_ASSERT_EQUAL( strlen( addv4 ), ConnInfo.addressLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( addv4, ConnInfo.pAddress, ConnInfo.addressLength );
+    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, connInfo.networkType );
+    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV4, connInfo.addressType );
+    TEST_ASSERT_EQUAL( strlen( addv4 ), connInfo.addressLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( addv4, connInfo.pAddress, connInfo.addressLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -669,16 +669,16 @@ void test_SdpDeserializer_ParseConnectionInfo_PassIPv6( void )
     char addv6[] = "2201:056D::112E:144A:1E24";
     char originatorBuffer[] ="IN IP6 2201:056D::112E:144A:1E24";
     size_t inputLength = strlen( originatorBuffer );
-    SdpConnectionInfo_t ConnInfo;
+    SdpConnectionInfo_t connInfo;
 
-    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( ConnInfo ) );
+    result = SdpDeserializer_ParseConnectionInfo( originatorBuffer, inputLength, &( connInfo ) );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, ConnInfo.networkType );
-    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV6, ConnInfo.addressType );
-    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength );
-    TEST_ASSERT_EQUAL( strlen( addv6 ), ConnInfo.addressLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( addv6, ConnInfo.pAddress, ConnInfo.addressLength );
+    TEST_ASSERT_EQUAL( SDP_NETWORK_IN, connInfo.networkType );
+    TEST_ASSERT_EQUAL( SDP_ADDRESS_IPV6, connInfo.addressType );
+    TEST_ASSERT_EQUAL( strlen( addv6 ), connInfo.addressLength );
+    TEST_ASSERT_EQUAL( strlen( addv6 ), connInfo.addressLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( addv6, connInfo.pAddress, connInfo.addressLength );
 }
 
 /*-----------------------------------------------------------*/
