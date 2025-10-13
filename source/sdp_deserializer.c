@@ -55,6 +55,14 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
+        if( pCtx->currentIndex > pCtx->totalLength - 2 )
+        {
+            result = SDP_RESULT_MESSAGE_MALFORMED;
+        }
+    }
+
+    if( result == SDP_RESULT_OK )
+    {
         remainingLength = pCtx->totalLength - pCtx->currentIndex;
 
         if( remainingLength < 3 )
@@ -73,14 +81,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        if( pCtx->currentIndex <= pCtx->totalLength - 2 )
-        {
-            currIndex = pCtx->currentIndex + 2;
-        }
-        else
-        {
-            result = SDP_RESULT_MESSAGE_MALFORMED;
-        }
+        currIndex = pCtx->currentIndex + 2;
     }
 
     if( result == SDP_RESULT_OK )
@@ -151,7 +152,7 @@ SdpResult_t SdpDeserializer_ParseOriginator( const char * pValue,
 
     if( result == SDP_RESULT_OK )
     {
-        for( i = 0; ( i < valueLength ) && ( start < valueLength ); i++ )
+        for( i = 0; i < valueLength; i++ )
         {
             if( pValue[ i ] == ' ' )
             {
@@ -232,7 +233,7 @@ SdpResult_t SdpDeserializer_ParseConnectionInfo( const char * pValue,
 
     if( result == SDP_RESULT_OK )
     {
-        for( i = 0; ( i < valueLength ) && ( start < valueLength ); i++ )
+        for( i = 0; i < valueLength; i++ )
         {
             if( pValue[ i ] == ' ' )
             {
@@ -340,11 +341,15 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
                     sscanfRetVal = sscanf( &( pValue[ i + 1 ] ),
                                            "%" SDP_PRINT_FMT_UINT64,
                                            &( pBandwidthInfo->sdpBandwidthValue ) );
-                }
 
-                if( sscanfRetVal != 1 )
+                    if( sscanfRetVal != 1 )
+                    {
+                        result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
+                    }
+                }
+                else
                 {
-                    result = SDP_RESULT_MESSAGE_MALFORMED_INVALID_BANDWIDTH;
+                    result = SDP_RESULT_MESSAGE_MALFORMED;
                 }
 
                 break;
@@ -495,7 +500,7 @@ SdpResult_t SdpDeserializer_ParseMedia( const char * pValue,
 
     if( result == SDP_RESULT_OK )
     {
-        for( i = 0; ( i < valueLength ) && ( start < valueLength ); i++ )
+        for( i = 0; i < valueLength; i++ )
         {
             if( pValue[ i ] == ' ' )
             {
