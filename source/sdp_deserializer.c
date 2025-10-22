@@ -34,7 +34,7 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
                                      const char ** pValue,
                                      size_t * pValueLength )
 {
-    size_t i, remainingLength, valueLength = 0;
+    size_t i, remainingLength, valueLength;
     SdpResult_t result = SDP_RESULT_OK;
 
     if( ( pCtx == NULL ) ||
@@ -91,17 +91,11 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
         {
             if( pCtx->pStart[ i - 1 ] == '\r' )
             {
-                if( ( i - pCtx->currentIndex ) >= 3 )
-                {
-                    valueLength = i - pCtx->currentIndex - 3;
-                }
+                valueLength = i - pCtx->currentIndex - 3;
             }
             else
             {
-                if( ( i - pCtx->currentIndex ) >= 2 )
-                {
-                    valueLength = i - pCtx->currentIndex - 2;
-                }
+                valueLength = i - pCtx->currentIndex - 2;
             }
 
             if( valueLength > 0 )
