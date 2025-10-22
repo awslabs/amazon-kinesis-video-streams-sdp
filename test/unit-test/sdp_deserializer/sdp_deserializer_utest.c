@@ -737,6 +737,22 @@ void test_SdpDeserializer_ParseBandwidthInfo_NoColon( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief The message is malformed with colon at end.
+ */
+void test_SdpDeserializer_ParseBandwidthInfo_ColonAtEnd( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] ="X-YZ:";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpBandwidthInfo_t bandwidth;
+
+    result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief The bandwidth valid.
  */
 void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
@@ -935,6 +951,31 @@ void test_SdpDeserializer_ParseAttribute_PassNoAttributeValue( void )
     TEST_ASSERT_EQUAL_size_t( 0, attribute.attributeValueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( NULL, attribute.pAttributeValue, attribute.attributeValueLength );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Inputs are valid with colon at end (no attribute value).
+ */
+void test_SdpDeserializer_ParseAttribute_PassColonAtEnd( void )
+{
+    SdpResult_t result;
+    char attributeString[] = "recvonly:";
+    size_t attributeStringLength = strlen( attributeString );
+    char expectAttributeName[] = "recvonly";
+    size_t expectAttributeNameLength = strlen( expectAttributeName );
+    SdpAttribute_t attribute;
+
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
+
+    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &( attribute ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL_size_t( expectAttributeNameLength, attribute.attributeNameLength );
+    TEST_ASSERT_EQUAL_size_t( 0, attribute.attributeValueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( expectAttributeName, attribute.pAttributeName, attribute.attributeNameLength );
+    TEST_ASSERT_EQUAL( NULL, attribute.pAttributeValue );
 }
 
 /*-----------------------------------------------------------*/
