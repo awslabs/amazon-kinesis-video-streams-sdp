@@ -710,7 +710,7 @@ void test_SdpDeserializer_ParseBandwidthInfo_BadParams( void )
 void test_SdpDeserializer_ParseBandwidthInfo_NoBandwidthValue( void )
 {
     SdpResult_t result;
-    char originatorBuffer[] ="X-YZ:";
+    char originatorBuffer[] ="X-YZ:abc";
     size_t inputLength = strlen( originatorBuffer );
     SdpBandwidthInfo_t bandwidth;
 
