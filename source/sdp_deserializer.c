@@ -55,14 +55,6 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
 
     if( result == SDP_RESULT_OK )
     {
-        if( pCtx->currentIndex > pCtx->totalLength - 2 )
-        {
-            result = SDP_RESULT_MESSAGE_MALFORMED;
-        }
-    }
-
-    if( result == SDP_RESULT_OK )
-    {
         remainingLength = pCtx->totalLength - pCtx->currentIndex;
 
         if( remainingLength < 3 )
