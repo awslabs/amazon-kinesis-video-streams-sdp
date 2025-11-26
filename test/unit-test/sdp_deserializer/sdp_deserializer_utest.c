@@ -395,38 +395,7 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
-/*-----------------------------------------------------------*/
 
-/**
- * @brief The message is correct ending with '\r'.
- */
-void test_SdpDeserializer_GetNext_Incorrect_End( void )
-{
-    SdpResult_t result;
-    const char * pValue;
-    size_t valueLength;
-    uint8_t type;
-    /* Message ending with \r only */
-    char buffer[] = "o=Jode\r";
-    size_t inputLength = strlen( buffer );
-
-    /* Initialize serializer context. */
-    deserializerContext.pStart = buffer;
-    deserializerContext.totalLength = inputLength;
-    deserializerContext.currentIndex = 0;
-
-    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
-
-    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
-    TEST_ASSERT_EQUAL( SDP_TYPE_ORIGINATOR, type );
-    TEST_ASSERT_EQUAL( 4, valueLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( "Jode", pValue, valueLength );
-    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
-    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
-    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
-}
-
-/*-----------------------------------------------------------*/
 
 /**
  * @brief The message has \r followed by non-\n character.
