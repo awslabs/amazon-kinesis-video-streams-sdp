@@ -46,8 +46,8 @@ a=rtpmap:99 h263-1998/90000
 1. Call SdpDeserializer_Init to start deserializing an SDP message.
 1. Keep calling SdpDeserializer_GetNext() to get next `<type>=<value>` in the SDP message.
 1. Call corresponding parse APIs to parse string into structure:
-   - If return type is SDP_TYPE_ORIGINATOR, call SdpDeserializer_ParseOriginator().
-   - If return type is SDP_TYPE_BANDWIDTH, call SdpDeserializer_ParseBandwidthInfo().
+   - If type is SDP_TYPE_ORIGINATOR, call SdpDeserializer_ParseOriginator().
+   - If type is SDP_TYPE_BANDWIDTH, call SdpDeserializer_ParseBandwidthInfo().
    - etc.
 1. Loop to step 2 till you get SDP_RESULT_MESSAGE_END.
 
