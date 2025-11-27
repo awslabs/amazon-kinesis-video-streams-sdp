@@ -99,15 +99,15 @@ SdpResult_t SdpDeserializer_GetNext( SdpDeserializerContext_t * pCtx,
                 *pValueLength = valueLength;
 
                 if( ( pCtx->pStart[ i ] == '\r' ) &&
-                    ( i + 1 < pCtx->totalLength ) &&
+                    ( ( i + 1 ) < pCtx->totalLength ) &&
                     ( pCtx->pStart[ i + 1 ] == '\n' ) )
                 {
-                    /* Skip \r\n */
+                    /* Skip \r\n. */
                     pCtx->currentIndex = i + 2;
                 }
                 else
                 {
-                    /* Skip \r or \n */
+                    /* Skip \r or \n. */
                     pCtx->currentIndex = i + 1;
                 }
             }

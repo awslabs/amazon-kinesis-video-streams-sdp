@@ -318,7 +318,7 @@ void test_SdpDeserializer_GetNext_No_Line_Ending( void )
     const char * pValue;
     size_t valueLength;
     uint8_t type;
-    /* Message without any line ending */
+    /* Message without any line ending. */
     char buffer[] = "v=2";
     size_t inputLength = strlen( buffer );
 
@@ -395,19 +395,18 @@ void test_SdpDeserializer_GetNext_Pass_r( void )
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
-
+/*-----------------------------------------------------------*/
 
 /**
- * @brief The message has \r followed by non-\n character.
+ * @brief The message lines separated by \r.
  */
-void test_SdpDeserializer_GetNext_r_followed_by_non_n( void )
+void test_SdpDeserializer_GetNext_Lines_Separated_By_CR( void )
 {
     SdpResult_t result;
     const char * pValue;
     size_t valueLength;
     uint8_t type;
-    /* Message with \r followed by 'x' instead of \n */
-    char buffer[] = "v=2\rx";
+    char buffer[] = "v=2\ro=Jode\r";
     size_t inputLength = strlen( buffer );
 
     /* Initialize serializer context. */
@@ -421,9 +420,138 @@ void test_SdpDeserializer_GetNext_r_followed_by_non_n( void )
     TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
     TEST_ASSERT_EQUAL( 1, valueLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_ORIGINATOR, type );
+    TEST_ASSERT_EQUAL( 4, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "Jode", pValue, valueLength );
+
     TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
     TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
-    TEST_ASSERT_EQUAL( 4, deserializerContext.currentIndex ); /* Should skip only \r, not \rx */
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message lines separated by \r\n.
+ */
+void test_SdpDeserializer_GetNext_Lines_Separated_By_CR_NL( void )
+{
+    SdpResult_t result;
+    const char * pValue;
+    size_t valueLength;
+    uint8_t type;
+    char buffer[] = "v=2\r\no=Jode\r\n";
+    size_t inputLength = strlen( buffer );
+
+    /* Initialize serializer context. */
+    deserializerContext.pStart = buffer;
+    deserializerContext.totalLength = inputLength;
+    deserializerContext.currentIndex = 0;
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
+    TEST_ASSERT_EQUAL( 1, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_ORIGINATOR, type );
+    TEST_ASSERT_EQUAL( 4, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "Jode", pValue, valueLength );
+
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message lines separated by \n.
+ */
+void test_SdpDeserializer_GetNext_Lines_Separated_By_NL( void )
+{
+    SdpResult_t result;
+    const char * pValue;
+    size_t valueLength;
+    uint8_t type;
+    char buffer[] = "v=2\no=Jode\n";
+    size_t inputLength = strlen( buffer );
+
+    /* Initialize serializer context. */
+    deserializerContext.pStart = buffer;
+    deserializerContext.totalLength = inputLength;
+    deserializerContext.currentIndex = 0;
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
+    TEST_ASSERT_EQUAL( 1, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_ORIGINATOR, type );
+    TEST_ASSERT_EQUAL( 4, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "Jode", pValue, valueLength );
+
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message lines separated by mixed \r\n and \n.
+ */
+void test_SdpDeserializer_GetNext_Lines_Separated_By_Mixed( void )
+{
+    SdpResult_t result;
+    const char * pValue;
+    size_t valueLength;
+    uint8_t type;
+    char buffer[] = "v=2\ro=Jode\r\ns=Web\n";
+    size_t inputLength = strlen( buffer );
+
+    /* Initialize serializer context. */
+    deserializerContext.pStart = buffer;
+    deserializerContext.totalLength = inputLength;
+    deserializerContext.currentIndex = 0;
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_VERSION, type );
+    TEST_ASSERT_EQUAL( 1, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "2", pValue, valueLength );
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_ORIGINATOR, type );
+    TEST_ASSERT_EQUAL( 4, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "Jode", pValue, valueLength );
+
+    result = SdpDeserializer_GetNext( &( deserializerContext ), &( type ), &( pValue ), &( valueLength ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SDP_TYPE_SESSION_NAME, type );
+    TEST_ASSERT_EQUAL( 3, valueLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "Web", pValue, valueLength );
+
+    TEST_ASSERT_EQUAL( buffer, deserializerContext.pStart );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.totalLength );
+    TEST_ASSERT_EQUAL( inputLength, deserializerContext.currentIndex );
 }
 
 /*-----------------------------------------------------------*/
