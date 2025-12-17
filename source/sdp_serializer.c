@@ -192,6 +192,7 @@ SdpResult_t SdpSerializer_AddOriginator( SdpSerializerContext_t * pCtx,
         ( ( pCtx->pStart != NULL ) &&
           ( pCtx->currentIndex > pCtx->totalLength ) ) ||
         ( pOriginator == NULL ) ||
+        ( pOriginator->pUserName == NULL ) ||
         ( pOriginator->connectionInfo.pAddress == NULL ) ||
         ( pOriginator->connectionInfo.networkType != SDP_NETWORK_IN ) ||
         ( ( pOriginator->connectionInfo.addressType != SDP_ADDRESS_IPV4 ) &&

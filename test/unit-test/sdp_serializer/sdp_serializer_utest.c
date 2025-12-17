@@ -687,6 +687,29 @@ void test_SdpSerializer_AddOriginator_NullOriginator( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Originator pUserName is NULL.
+ */
+void test_SdpSerializer_AddOriginator_NullUserName( void )
+{
+    SdpResult_t result;
+    SdpOriginator_t originator;
+
+    serializerContext.pStart = &( serializerBuffer[ 0 ] );
+    serializerContext.totalLength = serializerBufferLength;
+    serializerContext.currentIndex = 0;
+
+    originator.pUserName = NULL;
+
+    result = SdpSerializer_AddOriginator( &( serializerContext ),
+                                          'o',
+                                          &( originator ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Input address of connection information is NULL.
  */
 void test_SdpSerializer_AddOriginator_NullConnInfoAddr( void )
