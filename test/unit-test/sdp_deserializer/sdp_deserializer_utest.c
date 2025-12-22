@@ -943,6 +943,24 @@ void test_SdpDeserializer_ParseBandwidthInfo_ColonAtEnd( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief The message is malformed with colon at position zero.
+ */
+void test_SdpDeserializer_ParseBandwidthInfo_ColonAtPositionZero( void )
+{
+    SdpResult_t result;
+    char originatorBuffer[] =":256";
+    size_t inputLength = strlen( originatorBuffer );
+    SdpBandwidthInfo_t bandwidth;
+
+    memset( &( bandwidth ), 0, sizeof( SdpBandwidthInfo_t ) );
+
+    result = SdpDeserializer_ParseBandwidthInfo( originatorBuffer, inputLength, &( bandwidth ) );
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief The bandwidth valid.
  */
 void test_SdpDeserializer_ParseBandwidthInfo_Pass( void )
@@ -1089,6 +1107,43 @@ void test_SdpDeserializer_ParseAttribute_BadParams( void )
     result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, NULL );
 
     TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message is malformed with zero valueLength.
+ */
+void test_SdpDeserializer_ParseAttribute_ZeroValueLength( void )
+{
+    SdpResult_t result;
+    char attributeString[] = "rtpmap";
+    SdpAttribute_t attribute;
+
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
+
+    result = SdpDeserializer_ParseAttribute( attributeString, 0, &( attribute ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_BAD_PARAM, result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief The message is malformed with empty attribute name.
+ */
+void test_SdpDeserializer_ParseAttribute_EmptyAttributeName( void )
+{
+    SdpResult_t result;
+    char attributeString[] = ":value";
+    size_t attributeStringLength = strlen( attributeString );
+    SdpAttribute_t attribute;
+
+    memset( &( attribute ), 0, sizeof( SdpAttribute_t ) );
+
+    result = SdpDeserializer_ParseAttribute( attributeString, attributeStringLength, &( attribute ) );
+
+    TEST_ASSERT_EQUAL( SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO, result );
 }
 
 /*-----------------------------------------------------------*/

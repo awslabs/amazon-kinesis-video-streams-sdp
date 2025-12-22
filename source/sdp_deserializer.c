@@ -320,6 +320,13 @@ SdpResult_t SdpDeserializer_ParseBandwidthInfo( const char * pValue,
             if( pValue[ i ] == ':' )
             {
                 numColon += 1;
+
+                if( i == 0 )
+                {
+                    result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
+                    break;
+                }
+
                 pBandwidthInfo->pBwType = &( pValue[ 0 ] );
                 pBandwidthInfo->bwTypeLength = i;
 
@@ -427,7 +434,8 @@ SdpResult_t SdpDeserializer_ParseAttribute( const char * pValue,
 
     /* Input check. */
     if( ( pValue == NULL ) ||
-        ( pAttribute == NULL ) )
+        ( pAttribute == NULL ) ||
+        ( valueLength == 0 ) )
     {
         result = SDP_RESULT_BAD_PARAM;
     }
@@ -438,6 +446,12 @@ SdpResult_t SdpDeserializer_ParseAttribute( const char * pValue,
         {
             if( pValue[ i ] == ':' )
             {
+                if( i == 0 )
+                {
+                    result = SDP_RESULT_MESSAGE_MALFORMED_NOT_ENOUGH_INFO;
+                    break;
+                }
+
                 pAttribute->pAttributeName = &( pValue[ 0 ] );
                 pAttribute->attributeNameLength = i;
 
